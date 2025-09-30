@@ -15,7 +15,7 @@ class Pippins(discord.Client):
         self.STATISTICS_CHANNEL: discord.TextChannel = self.GAMING_LOG_GUILD.get_channel(1408876560077033552) # type: ignore
         self.LOG_CHANNEL: discord.TextChannel = self.GAMING_LOG_GUILD.get_channel(1408876545749160056) # type: ignore
 
-        print("게이밍 피핀스 온라인!")
+        print("게이머 피핀스 온라인!")
 
 
     async def on_message(self, msg: discord.Message):
