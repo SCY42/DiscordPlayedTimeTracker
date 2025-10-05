@@ -9,15 +9,15 @@ async def on_presence_update(before, after):
     if before.guild != GAMER_PIPPINS.GAMING_LOG_GUILD:
         return
     
-    logChannel = get_channel(before.id, "log")
+    logChannel = GAMER_PIPPINS.getChannelFromID(before.id, "log")
     if not logChannel: return
 
-    statChannel = get_channel(before.id, "stat")
+    statChannel = GAMER_PIPPINS.getChannelFromID(before.id, "stat")
 
     gamesBefore = [game for game in before.activities if game.type == discord.ActivityType.playing \
-                   and game.name not in [_game["name"] for _game in GAMER_PIPPINS.BLACKLIST]]
+                   and game.name not in [_game["name"] for _game in GAMER_PIPPINS.BLACKLIST[str(before.id)]]]
     gamesAfter = [game for game in after.activities if game.type == discord.ActivityType.playing \
-                  and game.name not in [_game["name"] for _game in GAMER_PIPPINS.BLACKLIST]]
+                  and game.name not in [_game["name"] for _game in GAMER_PIPPINS.BLACKLIST[str(before.id)]]]
 
     stoppedPlaying = [game for game in gamesBefore if game.name not in [_game.name for _game in gamesAfter]]
     startedPlaying = [game for game in gamesAfter if game.name not in [_game.name for _game in gamesBefore]]
@@ -40,12 +40,3 @@ async def on_presence_update(before, after):
     if startedPlaying:
         for game in startedPlaying:
             await logChannel.send(embed=LogEmbed(game).startPlaying())  # type: ignore
-
-
-def get_channel(id: int, type: str):
-    user = GAMER_PIPPINS.USERID_CHANNEL.get(str(id))
-    if not user:
-        return False
-    
-    channelID = user[type]
-    return GAMER_PIPPINS.get_channel(channelID)

@@ -5,12 +5,15 @@ from dotenv import load_dotenv
 class Pippins(discord.Client):
     def __init__(self):
         super().__init__(intents = discord.Intents.all())
-        self.BLACKLIST = []
+        self.BLACKLIST: dict[str, list[dict[str, str]]] = {}
         with open("userID_channel.json", 'r', encoding="utf8") as f:
             self.USERID_CHANNEL: dict[str, dict[str, int]] = json.load(f)
 
 
     async def on_ready(self):
+        print("내부 캐시 준비 중...")
+        await self.wait_until_ready()
+
         self.GAMING_LOG_GUILD: discord.Guild = self.get_guild(1408875641071472783) # type: ignore
         self.USER_42: discord.Member = self.GAMING_LOG_GUILD.get_member(513676568745213953) # type: ignore
         self.statChannel: discord.TextChannel = self.GAMING_LOG_GUILD.get_channel(1408876560077033552) # type: ignore
@@ -33,8 +36,18 @@ class Pippins(discord.Client):
 
 
     def runBot(self):
+        print("봇 토큰 전달 중...")
         load_dotenv()
         super().run(os.environ.get("BOT_TOKEN")) # type: ignore
+
+
+    def getChannelFromID(self, id: int, type: str):
+        user = self.USERID_CHANNEL.get(str(id))
+        if not user:
+            return False
+        
+        channelID = user[type]
+        return self.get_channel(channelID)
 
 
 GAMER_PIPPINS = Pippins()
