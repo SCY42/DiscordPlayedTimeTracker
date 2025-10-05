@@ -1,5 +1,4 @@
-import discord
-from Pippins import GAMER_PIPPINS, TREE
+from Pippins import GAMER_PIPPINS
 
 
 import Blacklist

@@ -1,10 +1,11 @@
 import discord, json, datetime
 from zoneinfo import ZoneInfo
 from Pippins import GAMER_PIPPINS, TREE
+from EditStatEmbed import deleteEntry
 
 
 def load_blacklist():
-    with open("blacklist/blacklist.json", 'r', encoding="utf8") as f:
+    with open("blacklists/blacklist.json", 'r', encoding="utf8") as f:
         GAMER_PIPPINS.BLACKLIST = json.load(f)
 
 
@@ -12,7 +13,7 @@ load_blacklist()
 
 
 def save_blacklist():
-    with open("blacklist/blacklist.json", 'w', encoding="utf8") as f:
+    with open("blacklists/blacklist.json", 'w', encoding="utf8") as f:
         GAMER_PIPPINS.BLACKLIST.sort(key=lambda x: x["date"], reverse=True)
         json.dump(GAMER_PIPPINS.BLACKLIST, f, indent=4)
 
@@ -48,7 +49,10 @@ class RecentStatsSelection(discord.ui.Select):
         games = []
 
         async for msg in GAMER_PIPPINS.STATISTICS_CHANNEL.history(limit=1):
-            games = [field["name"] for field in msg.embeds[0].to_dict()["fields"]] # type: ignore
+            embedDict = msg.embeds[0].to_dict()
+            if embedDict.get("fields") is None:
+                return False
+            games = [field["name"] for field in embedDict.get("fields")]    # type: ignore
 
         return [discord.SelectOption(label="선택 취소하기!", emoji="🚫", value="SELECTION_CANCELLED")] \
              + [discord.SelectOption(label=name) if name else discord.SelectOption(label="???") for name in games]
@@ -56,20 +60,24 @@ class RecentStatsSelection(discord.ui.Select):
     
     async def init(self, view: discord.ui.View):
         self.parentView = view
-        self.options = await self.getLatestStatGames()
-        super().__init__(placeholder="제일 최근의 통계에 기록된 게임 목록", options=self.options)
+        options = await self.getLatestStatGames()  # type: ignore
+        if options is False:
+            super().__init__(placeholder="제일 최근의 통계에 기록된 게임 목록",
+                             options=[discord.SelectOption(label="앗?! 제일 최근의 통계가 비어 있어!", emoji="🚫", value="SELECTION_CANCELLED")])
+        else:
+            super().__init__(placeholder="제일 최근의 통계에 기록된 게임 목록", options=options)   # type: ignore
 
     
     async def callback(self, interaction: discord.Interaction):
         self.disabled = True
-        await interaction.response.edit_message(view=self.parentView)
+        await interaction.message.edit(view=self.parentView) # type: ignore
 
         if self.values[0] == "SELECTION_CANCELLED":
-            await interaction.channel.send("블랙리스트 추가를 취소했어!") # type: ignore
+            await interaction.response.send_message("블랙리스트 추가를 취소했어!") # type: ignore
             return
 
         append_blacklist(self.values)
-        await interaction.channel.send("블랙리스트에 게임이 추가됐어!") # type: ignore
+        await interaction.response.send_message(f"블랙리스트에 {", ".join([f"`{value}`" for value in self.values])}이(가) 추가됐어!\n제일 최근 통계에서 {", ".join([f"`{value}`" for value in self.values])}을(를) 삭제할래?", view=statDeleteConfirmView(self.values)) # type: ignore
 
 
 class RecentStatsSelectionView(discord.ui.View):
@@ -94,14 +102,14 @@ class BlacklistSelection(discord.ui.Select):
 
     async def callback(self, interaction: discord.Interaction):
         self.disabled = True
-        await interaction.response.edit_message(view=self.parentView)
+        await interaction.message.edit(view=self.parentView) # type: ignore
 
         if self.values[0] == "SELECTION_CANCELLED":
-            await interaction.channel.send("블랙리스트 삭제를 취소했어!") # type: ignore
+            await interaction.response.send_message("블랙리스트 삭제를 취소했어!") # type: ignore
             return
 
         remove_blacklist(self.values)
-        await interaction.channel.send("블랙리스트에서 게임이 삭제됐어!") # type: ignore
+        await interaction.response.send_message(f"블랙리스트에서 {", ".join([f"`{value}`" for value in self.values])}이(가) 삭제됐어!") # type: ignore
 
 
 class BlacklistSelectionView(discord.ui.View):
@@ -110,6 +118,55 @@ class BlacklistSelectionView(discord.ui.View):
         sel = BlacklistSelection()
         await sel.init(self)
         self.add_item(sel)
+
+
+class StatDeleteYesButton(discord.ui.Button):
+    def __init__(self, games: list[str], parentView: discord.ui.View):
+        super().__init__(
+            style = discord.ButtonStyle.primary,
+            emoji = "<:pippinsHappy:1422640037404741704>",
+            label = "응"
+        ) 
+        self.games = games
+        self.parentView = parentView
+
+    async def callback(self, interaction: discord.Interaction):
+        await disableEveryItem(interaction.message, self.parentView)    # type: ignore
+        success = await deleteEntry(self.games)
+        if success:
+            await interaction.response.send_message(f"최근 통계에서 {", ".join([f"`{game}`" for game in self.games])}을 삭제했어!")
+        else:
+            await interaction.response.send_message(f"이런! 최근 통계에 {", ".join([f"`{game}`" for game in self.games])}이 없잖아?")
+
+
+class StatDeleteNoButton(discord.ui.Button):
+    def __init__(self, games: list[str], parentView: discord.ui.View):
+        super().__init__(
+            style = discord.ButtonStyle.secondary,
+            emoji = "<:pippinsSad:1422640022766485596>",
+            label = "아니"
+        )
+        self.games = games
+        self.parentView = parentView
+
+    async def callback(self, interaction: discord.Interaction):
+        await disableEveryItem(interaction.message, self.parentView)    # type: ignore
+        await interaction.response.send_message(f"최근 통계에서 {", ".join([f"`{game}`" for game in self.games])}을 유지했어!")
+
+
+def statDeleteConfirmView(games: list[str]):
+    view = discord.ui.View()
+    view.add_item(StatDeleteYesButton(games, view))
+    view.add_item(StatDeleteNoButton(games, view))
+
+    return view
+
+
+async def disableEveryItem(msg: discord.Message, view: discord.ui.View):
+    for item in view.children:
+        item.disabled = True    # type: ignore
+    
+    await msg.edit(view=view)
 
 
 @TREE.command(name="블랙리스트_확인", description="로그와 통계에서 제외될 블랙리스트를 확인해!")
@@ -139,9 +196,8 @@ async def addBlacklist(i: discord.Interaction):
 @TREE.command(name="블랙리스트_직접_추가", description="블랙리스트에 추가할 게임의 이름을 직접 입력해!")
 @discord.app_commands.describe(game="정확하게 적어야 되는 거 알지?")
 async def addBlacklistManual(interaction: discord.Interaction, game: str):
-# async def addBlacklistManual(i: discord.Interaction):
     append_blacklist([game])
-    await interaction.response.send_message("블랙리스트가 업데이트됐어!")
+    await interaction.response.send_message(content=f"블랙리스트에 `{game}`이(가) 추가됐어!\n제일 최근 통계에서 `{game}`을(를) 삭제할래?", view=statDeleteConfirmView([game]))
 
 
 @TREE.command(name="블랙리스트_제거", description="블랙리스트에서 게임을 제거해!")

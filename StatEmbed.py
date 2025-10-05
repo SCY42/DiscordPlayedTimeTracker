@@ -13,7 +13,7 @@ ICON_SUNDAY = "https://cdn.discordapp.com/emojis/1409430046766137454.png"
 WEEKDAY_ICONS = (ICON_MONDAY, ICON_TUESDAY, ICON_WEDNESDAY, ICON_THURSDAY, ICON_FRIDAY, ICON_SATURDAY, ICON_SUNDAY)
 
 class StatEmbed:
-    def __init__(self, existingEmbed, updatedGame):
+    def __init__(self, existingEmbed, updatedGame) -> None:
         self.existingEmbedDict = existingEmbed.to_dict()
         self.isNew = False
 
@@ -30,7 +30,7 @@ class StatEmbed:
         self.setTitle()
 
 
-    def createNewEmbedDict(self):
+    def createNewEmbedDict(self) -> None:
         self.newEmbedDict = dict()
         self.newEmbedDict["footer"] = { "text": "마지막 업데이트" }
         self.newEmbedDict["author"] = { "name": f"{self.now.year}년 {self.now.month}월 {self.now.day}일",
@@ -43,13 +43,14 @@ class StatEmbed:
         self.newEmbedDict["title"] = ""
 
 
-    def _isTodaysStat(self):
+    def _isTodaysStat(self) -> bool:
         print(f"기존 임베드 날짜: {self.existingEmbedDict["author"]["name"]}")
         print(f"게임 생성 날짜  : {self.startTime.year}년 {self.startTime.month}월 {self.startTime.day}일")
         return self.existingEmbedDict["author"]["name"] == f"{self.startTime.year}년 {self.startTime.month}월 {self.startTime.day}일"
 
 
-    def _stringToSeconds(self, string):
+    @staticmethod
+    def _stringToSeconds(string) -> int:
         hours, minutes, seconds = 0, 0, 0
         h = re.search(r'(\d+)시간', string)
         m = re.search(r'(\d+)분', string)
@@ -62,7 +63,8 @@ class StatEmbed:
         return hours * 3600 + minutes * 60 + seconds
 
 
-    def _SecondsToString(self, seconds):
+    @staticmethod
+    def _SecondsToString(seconds) -> str:
         h, seconds = divmod(seconds, 3600)
         m, s = divmod(seconds, 60)
 
@@ -73,7 +75,7 @@ class StatEmbed:
         return" ".join([f"{part[0]}{part[1]}" for part in parts if part[0]])
 
 
-    def setFields(self, isToday):
+    def setFields(self, isToday) -> None:
         if not isToday:
             self.newEmbedDict["fields"].append({
                 "inline": False,
@@ -99,11 +101,11 @@ class StatEmbed:
             self.newEmbedDict["fields"] = fields
 
 
-    def _getTotalSeconds(self):
+    def _getTotalSeconds(self) -> int:
         return sum([self._stringToSeconds(field["value"]) for field in self.newEmbedDict["fields"]])
 
 
-    def setColor(self):
+    def setColor(self) -> None:
         HUE_RED, HUE_GREEN = 0, 138
         MAX_SEC = 5 * 60 * 60
         sec = self._getTotalSeconds()
@@ -116,10 +118,10 @@ class StatEmbed:
         self.newEmbedDict["color"] = color
 
 
-    def setTitle(self):
+    def setTitle(self) -> None:
         sec = self._getTotalSeconds()
         self.newEmbedDict["title"] = f"플레이 시간 통계 | {self._SecondsToString(sec)}"
 
 
-    def getEmbed(self):
+    def getEmbed(self) -> tuple[discord.Embed, bool]:
         return discord.Embed.from_dict(self.newEmbedDict), self.isNew
