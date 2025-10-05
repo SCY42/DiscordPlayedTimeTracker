@@ -48,7 +48,7 @@ class RecentStatsSelection(discord.ui.Select):
     async def getLatestStatGames(self):
         games = []
 
-        async for msg in GAMER_PIPPINS.STATISTICS_CHANNEL.history(limit=1):
+        async for msg in GAMER_PIPPINS.statChannel.history(limit=1):
             embedDict = msg.embeds[0].to_dict()
             if embedDict.get("fields") is None:
                 return False

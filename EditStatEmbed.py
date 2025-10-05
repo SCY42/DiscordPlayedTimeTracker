@@ -8,7 +8,7 @@ async def deleteEntry(games: list[str]) -> bool:
     embed = None
     result = False
 
-    async for msg in GAMER_PIPPINS.STATISTICS_CHANNEL.history(limit=1):
+    async for msg in GAMER_PIPPINS.statChannel.history(limit=1):
         message = msg
         embed = msg.embeds[0]
 

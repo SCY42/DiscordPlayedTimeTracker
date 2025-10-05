@@ -21,8 +21,6 @@ class StatEmbed:
         self.now = datetime.datetime.now(tz=ZoneInfo("Asia/Seoul"))
         self.startTime = updatedGame.created_at.astimezone(tz=ZoneInfo("Asia/Seoul"))
         self.playtimeSeconds = int((self.now - self.startTime).total_seconds())
-        print(f"self.now: {self.now}, self.updatedGame.start: {self.startTime}")
-        print(f"self.now - self.updatedGame.start: {self.now - self.startTime}")
 
         self.createNewEmbedDict()
         self.setFields(self._isTodaysStat())  # type: ignore
@@ -44,8 +42,6 @@ class StatEmbed:
 
 
     def _isTodaysStat(self) -> bool:
-        print(f"기존 임베드 날짜: {self.existingEmbedDict["author"]["name"]}")
-        print(f"게임 생성 날짜  : {self.startTime.year}년 {self.startTime.month}월 {self.startTime.day}일")
         return self.existingEmbedDict["author"]["name"] == f"{self.startTime.year}년 {self.startTime.month}월 {self.startTime.day}일"
 
 

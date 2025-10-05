@@ -1,13 +1,18 @@
 import discord
 from LogEmbed import LogEmbed
 from StatEmbed import StatEmbed
-from Pippins import GAMER_PIPPINS, TREE
+from Pippins import GAMER_PIPPINS
 
 
 @GAMER_PIPPINS.event
 async def on_presence_update(before, after):
-    if before != GAMER_PIPPINS.USER_42 or before.guild != GAMER_PIPPINS.GAMING_LOG_GUILD:
+    if before.guild != GAMER_PIPPINS.GAMING_LOG_GUILD:
         return
+    
+    logChannel = get_channel(before.id, "log")
+    if not logChannel: return
+
+    statChannel = get_channel(before.id, "stat")
 
     gamesBefore = [game for game in before.activities if game.type == discord.ActivityType.playing \
                    and game.name not in [_game["name"] for _game in GAMER_PIPPINS.BLACKLIST]]
@@ -22,16 +27,25 @@ async def on_presence_update(before, after):
     
     if stoppedPlaying:
         for game in stoppedPlaying:
-            await GAMER_PIPPINS.LOG_CHANNEL.send(embed=LogEmbed(game).stopPlaying())
+            await logChannel.send(embed=LogEmbed(game).stopPlaying())   # type: ignore
 
-            async for msg in GAMER_PIPPINS.STATISTICS_CHANNEL.history(limit=1):
+            async for msg in statChannel.history(limit=1):  # type: ignore
                 embed, isNewMsg = StatEmbed(msg.embeds[0], game).getEmbed()
                 if isNewMsg:
-                    await GAMER_PIPPINS.STATISTICS_CHANNEL.send(embed=embed)
+                    await statChannel.send(embed=embed) # type: ignore
                 else:
                     await msg.edit(embed=embed)
 
 
     if startedPlaying:
         for game in startedPlaying:
-            await GAMER_PIPPINS.LOG_CHANNEL.send(embed=LogEmbed(game).startPlaying())
+            await logChannel.send(embed=LogEmbed(game).startPlaying())  # type: ignore
+
+
+def get_channel(id: int, type: str):
+    user = GAMER_PIPPINS.USERID_CHANNEL.get(str(id))
+    if not user:
+        return False
+    
+    channelID = user[type]
+    return GAMER_PIPPINS.get_channel(channelID)
