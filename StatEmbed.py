@@ -14,7 +14,10 @@ WEEKDAY_ICONS = (ICON_MONDAY, ICON_TUESDAY, ICON_WEDNESDAY, ICON_THURSDAY, ICON_
 
 class StatEmbed:
     def __init__(self, existingEmbed, updatedGame) -> None:
-        self.existingEmbedDict = existingEmbed.to_dict()
+        if existingEmbed is not None:
+            self.existingEmbedDict = existingEmbed.to_dict()
+        else:
+            self.existingEmbedDict = None            
         self.isNew = False
 
         self.updatedGame = updatedGame
@@ -42,6 +45,9 @@ class StatEmbed:
 
 
     def _isTodaysStat(self) -> bool:
+        if self.existingEmbedDict is None:
+            return False
+        
         return self.existingEmbedDict["author"]["name"] == f"{self.startTime.year}년 {self.startTime.month}월 {self.startTime.day}일"
 
 
@@ -81,7 +87,7 @@ class StatEmbed:
             self.isNew = True
         
         else:
-            fields = self.existingEmbedDict["fields"]
+            fields = self.existingEmbedDict["fields"]   # type: ignore
             for field in fields:
                 if field["name"] == self.updatedGame.name:
                     field["value"] = self._SecondsToString(self._stringToSeconds(field["value"]) + self.playtimeSeconds)

@@ -35,6 +35,9 @@ async def on_presence_update(before, after):
                     await statChannel.send(embed=embed) # type: ignore
                 else:
                     await msg.edit(embed=embed)
+            else:
+                embed, _ = StatEmbed(None, game).getEmbed()
+                await statChannel.send(embed=embed) # type: ignore
 
 
     if startedPlaying:

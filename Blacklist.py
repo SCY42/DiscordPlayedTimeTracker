@@ -79,7 +79,7 @@ class RecentStatsSelection(discord.ui.Select):
             return
 
         append_blacklist(self.userID, self.values)
-        await interaction.response.send_message(f"블랙리스트에 {", ".join([f"`{value}`" for value in self.values])}이(가) 추가됐어!\n제일 최근 통계에서 {", ".join([f"`{value}`" for value in self.values])}을(를) 삭제할래?", view=statDeleteConfirmView(self.values)) # type: ignore
+        await interaction.response.send_message(f"블랙리스트에 {', '.join([f'`{value}`' for value in self.values])}이(가) 추가됐어!\n제일 최근 통계에서 {', '.join([f'`{value}`' for value in self.values])}을(를) 삭제할래?", view=statDeleteConfirmView(self.values)) # type: ignore
 
 
 class RecentStatsSelectionView(discord.ui.View):
@@ -112,7 +112,7 @@ class BlacklistSelection(discord.ui.Select):
             return
 
         remove_blacklist(self.userID, self.values)
-        await interaction.response.send_message(f"블랙리스트에서 {", ".join([f"`{value}`" for value in self.values])}이(가) 삭제됐어!") # type: ignore
+        await interaction.response.send_message(f"블랙리스트에서 {', '.join([f'`{value}`' for value in self.values])}이(가) 삭제됐어!") # type: ignore
 
 
 class BlacklistSelectionView(discord.ui.View):
@@ -137,9 +137,9 @@ class StatDeleteYesButton(discord.ui.Button):
         await disableEveryItem(interaction.message, self.parentView)    # type: ignore
         success = await deleteEntry(self.games)
         if success:
-            await interaction.response.send_message(f"최근 통계에서 {", ".join([f"`{game}`" for game in self.games])}을 삭제했어!")
+            await interaction.response.send_message(f"최근 통계에서 {', '.join([f'`{game}`' for game in self.games])}을 삭제했어!")
         else:
-            await interaction.response.send_message(f"이런! 최근 통계에 {", ".join([f"`{game}`" for game in self.games])}이 없잖아?")
+            await interaction.response.send_message(f"이런! 최근 통계에 {', '.join([f'`{game}`' for game in self.games])}이 없잖아?")
 
 
 class StatDeleteNoButton(discord.ui.Button):
@@ -154,7 +154,7 @@ class StatDeleteNoButton(discord.ui.Button):
 
     async def callback(self, interaction: discord.Interaction):
         await disableEveryItem(interaction.message, self.parentView)    # type: ignore
-        await interaction.response.send_message(f"최근 통계에서 {", ".join([f"`{game}`" for game in self.games])}을 유지했어!")
+        await interaction.response.send_message(f"최근 통계에서 {', '.join([f'`{game}`' for game in self.games])}을 유지했어!")
 
 
 def statDeleteConfirmView(games: list[str]):
