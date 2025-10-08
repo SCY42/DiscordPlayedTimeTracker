@@ -29,13 +29,15 @@ async def on_presence_update(before, after):
         for game in stoppedPlaying:
             await logChannel.send(embed=LogEmbed(game).stopPlaying())   # type: ignore
 
+            msgExists = False
             async for msg in statChannel.history(limit=1):  # type: ignore
+                msgExists = True
                 embed, isNewMsg = StatEmbed(msg.embeds[0], game).getEmbed()
                 if isNewMsg:
                     await statChannel.send(embed=embed) # type: ignore
                 else:
                     await msg.edit(embed=embed)
-            else:
+            if not msgExists:
                 embed, _ = StatEmbed(None, game).getEmbed()
                 await statChannel.send(embed=embed) # type: ignore
 
