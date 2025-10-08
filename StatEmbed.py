@@ -15,9 +15,9 @@ WEEKDAY_ICONS = (ICON_MONDAY, ICON_TUESDAY, ICON_WEDNESDAY, ICON_THURSDAY, ICON_
 class StatEmbed:
     def __init__(self, existingEmbed, updatedGame) -> None:
         if existingEmbed is not None:
-            self.existingEmbedDict = existingEmbed.to_dict()
+            self.existingEmbedDict: dict = existingEmbed.to_dict()
         else:
-            self.existingEmbedDict = None            
+            self.existingEmbedDict = None   # type: ignore
         self.isNew = False
 
         self.updatedGame = updatedGame
@@ -87,17 +87,24 @@ class StatEmbed:
             self.isNew = True
         
         else:
-            fields = self.existingEmbedDict["fields"]   # type: ignore
-            for field in fields:
-                if field["name"] == self.updatedGame.name:
-                    field["value"] = self._SecondsToString(self._stringToSeconds(field["value"]) + self.playtimeSeconds)
-                    break
-            else:
-                fields.append({
+            fields = self.existingEmbedDict.get("fields")
+            if fields is None:
+                fields = [{
                     "inline": False,
                     "name": self.updatedGame.name,
                     "value": self._SecondsToString(self.playtimeSeconds)
-                })
+                }]
+            else:
+                for field in fields:
+                    if field["name"] == self.updatedGame.name:
+                        field["value"] = self._SecondsToString(self._stringToSeconds(field["value"]) + self.playtimeSeconds)
+                        break
+                else:
+                    fields.append({
+                        "inline": False,
+                        "name": self.updatedGame.name,
+                        "value": self._SecondsToString(self.playtimeSeconds)
+                    })
                 
             fields.sort(key=lambda x: self._stringToSeconds(x["value"]), reverse=True)
             self.newEmbedDict["fields"] = fields

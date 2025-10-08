@@ -37,8 +37,8 @@ class Pippins(discord.Client):
 
     def runBot(self):
         print("봇 토큰 전달 중...")
-        load_dotenv()
-        super().run(os.environ.get("BOT_TOKEN")) # type: ignore
+        load_dotenv("../.env")
+        super().run(os.environ.get("GAMER_PIPPINS_TOKEN")) # type: ignore
 
 
     def getChannelFromID(self, id: int, type: str):
