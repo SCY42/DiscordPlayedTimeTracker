@@ -1,14 +1,30 @@
 {
     "513676568745213953": [
         {
+            "name": "Microsoft Visual Studio",
+            "date": "2025\ub144 10\uc6d4 9\uc77c"
+        },
+        {
+            "name": "Visual Studio Code",
+            "date": "2025\ub144 10\uc6d4 9\uc77c"
+        },
+        {
             "name": "Aseprite",
             "date": "2025\ub144 10\uc6d4 6\uc77c"
+        },
+        {
+            "name": "Clip Studio PAIN",
+            "date": "2025\ub144 10\uc6d4 10\uc77c"
         }
     ],
     "464784467391676436": [
         {
             "name": "\uc820\ub808\uc2a4 \uc874 \uc81c\ub85c",
             "date": "2025\ub144 10\uc6d4 8\uc77c"
+        },
+        {
+            "name": "Wallpaper Engine",
+            "date": "2025\ub144 10\uc6d4 14\uc77c"
         }
     ]
 }
