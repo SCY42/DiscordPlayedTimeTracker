@@ -139,7 +139,7 @@ class StatDeleteYesButton(discord.ui.Button):
         if success:
             await interaction.response.send_message(f"최근 통계에서 {', '.join([f'`{game}`' for game in self.games])}을 삭제했어!")
         else:
-            await interaction.response.send_message(f"이런! 최근 통계에 {', '.join([f'`{game}`' for game in self.games])}이 없잖아?")
+            await interaction.response.send_message(f"이런! 최근 통계에 {', '.join([f'`{game}`' for game in self.games])}이(가) 없잖아?")
 
 
 class StatDeleteNoButton(discord.ui.Button):

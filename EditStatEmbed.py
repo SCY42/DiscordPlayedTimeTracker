@@ -8,21 +8,24 @@ async def deleteEntry(games: list[str]) -> bool:
     embed = None
     result = False
 
-    async for msg in GAMER_PIPPINS.statChannel.history(limit=1):
+    async for msg in GAMER_PIPPINS.STAT_CHANNEL.history(limit=1):
         message = msg
         embed = msg.embeds[0]
 
-    if not message or not embed: return result
+    if not message or not embed: return result  # False
 
     embedDict = embed.to_dict()
     fields = embedDict.get("fields")
     
-    if not fields: return result
+    if not fields: return result    # False
 
     for field in fields:
         if field["name"] in games:
             fields.remove(field)
             result = True
+            break
+    else:
+        return result   # False
 
     totalSec = sum([StatEmbed._stringToSeconds(field["value"]) for field in fields])
     embedDict["title"] = f"플레이 시간 통계 | {StatEmbed._SecondsToString(totalSec)}"
