@@ -1,4 +1,4 @@
-import discord, os, json, Logger, asyncio
+import discord, os, json, Logger, asyncio, traceback, sys
 from dotenv import load_dotenv
 
 
@@ -45,6 +45,22 @@ class Pippins(discord.Client):
         #         await msg.channel.send(", ".join(commands))
         #     else:
         #         await msg.channel.send("커맨드가 없어!")
+        elif msg.content == "인포":
+            self.logger.info("로거 작동 중!")
+        elif msg.content == "디버그":
+            self.logger.debug("로거 작동 중!")
+        elif msg.content == "워닝":
+            self.logger.warning("로거 작동 중!")
+        elif msg.content == "에러":
+            self.logger.error("로거 작동 중!")
+
+        elif msg.content == "e":
+            a = 1 / 0
+
+
+    async def on_error(self, event, *args, **kwargs):
+        print(traceback.format_exc())
+        self.logger.error("에러")
 
 
     def runBot(self):
