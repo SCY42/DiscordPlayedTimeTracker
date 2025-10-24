@@ -1,4 +1,4 @@
-import discord, os, json, Logger, asyncio, traceback, sys
+import discord, os, json, Logger, asyncio, traceback, sys, json
 from dotenv import load_dotenv
 
 
@@ -39,28 +39,23 @@ class Pippins(discord.Client):
             await msg.channel.send("싱크!")
             await TREE.sync()
 
-        # elif msg.content == "커맨드":
-        #     commands = [f"`{cmd.name}`" for cmd in TREE._get_all_commands()]
-        #     if commands:
-        #         await msg.channel.send(", ".join(commands))
-        #     else:
-        #         await msg.channel.send("커맨드가 없어!")
-        elif msg.content == "인포":
-            self.logger.info("로거 작동 중!")
-        elif msg.content == "디버그":
-            self.logger.debug("로거 작동 중!")
-        elif msg.content == "워닝":
-            self.logger.warning("로거 작동 중!")
-        elif msg.content == "에러":
-            self.logger.error("로거 작동 중!")
-
-        elif msg.content == "e":
-            a = 1 / 0
-
 
     async def on_error(self, event, *args, **kwargs):
-        print(traceback.format_exc())
-        self.logger.error("에러")
+        e = sys.exception()
+
+        if e:
+            eType = type(e).__name__ + ": " + str(e)
+            tb = e.__traceback__
+            msg = traceback.format_exc()
+            frames = traceback.extract_tb(tb)
+            frame = frames[-1]
+            cause = f"Function `{frame.name}` in File `{frame.filename.split("\\")[-1]}`"
+            data = {"e": eType, "tb": msg, "cause": cause}
+        else:
+            data = {"e": "Not an Error", "tb": "Empty TraceBack", "cause": "None"}
+            
+        serialized = json.dumps(data)
+        self.logger.error(serialized)
 
 
     def runBot(self):

@@ -1,4 +1,4 @@
-import discord, logging, asyncio, traceback, sys
+import discord, logging, asyncio, json
 
 
 async def debugConsumer(queue: asyncio.Queue):
@@ -6,7 +6,7 @@ async def debugConsumer(queue: asyncio.Queue):
         msg, channel = await queue.get()
         icon = "https://cdn.discordapp.com/emojis/1431071556590633010.png"
 
-        embed = discord.Embed(title="DEBUG", description=msg)
+        embed = discord.Embed(title="DEBUG", description=msg, color=0xD387AB)
         embed.set_author(name="LOG", icon_url=icon)
 
         await channel.send(embed=embed)
@@ -16,7 +16,7 @@ async def infoConsumer(queue: asyncio.Queue):
     while True:
         msg, channel = await queue.get()
         icon = "https://cdn.discordapp.com/emojis/1431071558348312676.png"
-        embed = discord.Embed(title="INFO", description=msg)
+        embed = discord.Embed(title="INFO", description=msg, color=0x6CD0D0)
         embed.set_author(name="LOG", icon_url=icon)
 
         await channel.send(embed=embed)
@@ -26,7 +26,7 @@ async def warningConsumer(queue: asyncio.Queue):
     while True:
         msg, channel = await queue.get()
         icon = "https://cdn.discordapp.com/emojis/1431071554833350778.png"
-        embed = discord.Embed(title="WARNING", description=msg)
+        embed = discord.Embed(title="WARNING", description=msg, color=0xFFBE00)
         embed.set_author(name="LOG", icon_url=icon)
 
         await channel.send(embed=embed)
@@ -34,11 +34,15 @@ async def warningConsumer(queue: asyncio.Queue):
 
 async def errorConsumer(queue: asyncio.Queue):
     while True:
-        e, tb, channel = await queue.get()
+        msg, channel = await queue.get()
+        d = json.loads(msg)
+        e, tb, cause = d["e"], d["tb"], d["cause"]
+        
         icon = "https://cdn.discordapp.com/emojis/1431071559942148126.png"
-        embed = discord.Embed(title="ERROR", description=f"{e}")
+        embed = discord.Embed(title="ERROR", description=f"`{e}`", color=0xE34234)
         embed.set_author(name="LOG", icon_url=icon)
-        embed.add_field(name="Traceback", value=f"```{tb}```")
+        embed.add_field(name="Cause", value=cause, inline=False)
+        embed.add_field(name="Traceback", value=f"```{tb}```", inline=False)
 
         await channel.send(embed=embed)
   
@@ -65,12 +69,7 @@ class MultiHandler(logging.Handler):
         elif record.levelno == logging.WARNING:
             self.warningQueue.put_nowait((log_entry, self.channel))
         elif record.levelno == logging.ERROR:
-            if record.exc_info and record.exc_info[0]:
-                e = record.exc_info[0].__name__ + ": " + str(record.exc_info[1])
-                tb = str(record.exc_info[2])
-                self.errorQueue.put_nowait((e, tb, self.channel))
-            else:
-                self.errorQueue.put_nowait(("Not an Error", "(Empty Traceback)", self.channel))
+            self.errorQueue.put_nowait((log_entry, self.channel))
 
 
 class MyLogger():
@@ -82,28 +81,9 @@ class MyLogger():
         self.logger.addHandler(self.handler)
 
 
-    # def logError(self):
-    #     def decorator(func):
-    #         async def wrapper(*args, **kwargs):
-    #             try: return func(*args, **kwargs)
-    #             except Exception as e:
-    #                 self.logger.error(e)
-    #             return wrapper
-    #         return decorator
-        
-
-    # def logErrorAsync(self):
-    #     def decorator(func):
-    #         async def wrapper(*args, **kwargs):
-    #             try: return await func(*args, **kwargs)
-    #             except Exception as e:
-    #                 self.logger.error(e)
-    #             return wrapper
-    #         return decorator
-        
-
     def getHandler(self):
         return self.handler
+    
     
     def getLogger(self):
         return self.logger
