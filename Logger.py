@@ -75,7 +75,7 @@ class MultiHandler(logging.Handler):
 class MyLogger():
     def __init__(self, channel):
         self.logger = logging.getLogger("PippinsLogger")
-        self.logger.setLevel(logging.DEBUG)
+        self.logger.setLevel(logging.WARNING)
         self.handler = MultiHandler(channel)
         self.handler.setFormatter(logging.Formatter("%(message)s"))
         self.logger.addHandler(self.handler)

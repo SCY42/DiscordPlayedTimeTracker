@@ -4,7 +4,7 @@ from Pippins import GAMER_PIPPINS
 
 
 class LogEmbed:
-    def __init__(self, game):
+    def __init__(self, game: discord.Game):
         self.game = game
 
     def getThumbURL(self):
@@ -36,7 +36,7 @@ class LogEmbed:
 
         embed = discord.Embed(description=f"{formatted}동안 플레이함",
                               color=discord.Color.brand_red(),
-                              timestamp=datetime.datetime.now())
+                              timestamp=datetime.datetime.now(tz=ZoneInfo("Asia/Seoul")))
         embed.set_author(name=self.game.name,
                          icon_url= self.getThumbURL())    
         embed.set_footer(text="LOG")

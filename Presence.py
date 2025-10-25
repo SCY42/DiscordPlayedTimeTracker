@@ -2,6 +2,7 @@ import discord, datetime
 from LogEmbed import LogEmbed
 from StatEmbed import StatEmbed
 from Pippins import GAMER_PIPPINS
+from zoneinfo import ZoneInfo
 
 
 @GAMER_PIPPINS.event
@@ -9,7 +10,7 @@ async def on_presence_update(before: discord.Member, after: discord.Member):
     if before.guild != GAMER_PIPPINS.GAMING_LOG_GUILD:
         return
     
-    timestamp = datetime.datetime.now()
+    timestamp = datetime.datetime.now(tz=ZoneInfo("Asia/Seoul"))
     
     logChannel = GAMER_PIPPINS.getChannelFromID(before.id, "log")
     if not logChannel: return
@@ -36,20 +37,20 @@ async def on_presence_update(before: discord.Member, after: discord.Member):
     
     if stoppedPlaying:
         for game in stoppedPlaying:
-            seconds = delFromNP(before, str(game.name))
+            timestamp, seconds = delFromNP(before, str(game.name))
 
             await logChannel.send(embed=LogEmbed(game).stopPlaying(seconds))   # type: ignore
 
             msgExists = False
             async for msg in statChannel.history(limit=1):  # type: ignore
                 msgExists = True
-                embed, isNewMsg = StatEmbed(msg.embeds[0], game).getEmbed()
+                embed, isNewMsg = StatEmbed(msg.embeds[0], game, timestamp).getEmbed()
                 if isNewMsg:
                     await statChannel.send(embed=embed) # type: ignore
                 else:
                     await msg.edit(embed=embed)
             if not msgExists:
-                embed, _ = StatEmbed(None, game).getEmbed()
+                embed, _ = StatEmbed(None, game, timestamp).getEmbed()
                 await statChannel.send(embed=embed) # type: ignore
 
     if startedPlaying:
@@ -59,7 +60,7 @@ async def on_presence_update(before: discord.Member, after: discord.Member):
 
 
 def addToNP(user: discord.Member, game: str):
-    timestamp = datetime.datetime.now()
+    timestamp = datetime.datetime.now(tz=ZoneInfo("Asia/Seoul"))
     userID = str(user.id)
     nowPlaying = GAMER_PIPPINS.NOW_PLAYING.get(userID)  # 유저가 플레이 중인 게임들의 리스트
 
@@ -74,24 +75,25 @@ def addToNP(user: discord.Member, game: str):
             nowPlaying.append((game, timestamp))    # 플레이 중에 추가
 
 
-def delFromNP(user: discord.Member, game: str) -> int:
-    timestamp = datetime.datetime.now()
+def delFromNP(user: discord.Member, game: str) -> tuple[datetime.datetime, int] | tuple[None, int]:
+    now = datetime.datetime.now(tz=ZoneInfo("Asia/Seoul"))
     userID = str(user.id)
     nowPlaying = GAMER_PIPPINS.NOW_PLAYING.get(userID)  # 유저가 플레이 중인 게임들의 리스트
 
     if nowPlaying is None or nowPlaying == []:  # 유저가 아무 게임도 플레이 중이 아님 (뭔가 잘못됨)
         GAMER_PIPPINS.logger.warning(f"`{game}` 세션이 종료되었지만, 플레이 시작 기록이 없음.")
-        return 0
+        return None, 0
 
     else:
         for session in nowPlaying:
             if session[0] == game:
-                seconds = int((timestamp - session[1]).total_seconds())
+                seconds = int((now - session[1]).total_seconds())
+                timestamp = session[1]
                 nowPlaying.remove(session)  # 플레이 중에서 삭제
-                return seconds
+                return timestamp, seconds
         else:   
             GAMER_PIPPINS.logger.warning(f"`{game}` 세션이 종료되었지만, 플레이 시작 기록이 없음.")
-            return 0
+            return None, 0
 
             
 
