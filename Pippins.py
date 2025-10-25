@@ -32,7 +32,7 @@ class Pippins(discord.Client):
         icon = "https://cdn.discordapp.com/emojis/1431071558348312676.png"
         embed = discord.Embed(title="INFO", description="게이머 피핀스 온라인!", color=0x6CD0D0)
         embed.set_author(name="LOG", icon_url=icon)
-        embed.set_image(url="https://cdn.discordapp.com/emojis/1431622836828639257.gif")
+        embed.set_thumbnail(url="https://cdn.discordapp.com/emojis/1431622836828639257.gif")
         await self.SYSTEM_CHANNEL.send(embed=embed)
 
 

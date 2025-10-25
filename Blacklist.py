@@ -11,7 +11,7 @@ def load_blacklist():
             GAMER_PIPPINS.BLACKLIST = json.load(f)
         success = True
     finally:
-        if success: GAMER_PIPPINS.logger.info("블랙리스트 성공적으로 로드됨.")
+        if success and "logger" in GAMER_PIPPINS.__dict__: GAMER_PIPPINS.logger.info("블랙리스트 성공적으로 로드됨.")
 
 
 load_blacklist()
