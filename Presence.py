@@ -22,7 +22,7 @@ async def on_presence_update(before: discord.Member, after: discord.Member):
     stoppedPlaying = [game for game in gamesBefore if game.name not in [_game.name for _game in gamesAfter]]
     startedPlaying = [game for game in gamesAfter if game.name not in [_game.name for _game in gamesBefore]]
 
-    logText = "===== before.display_name의 활동 상태 업데이트됨 =====\n\n" \
+    logText = f"===== {before.display_name}의 활동 상태 업데이트됨 =====\n\n" \
     + f"gamesBefore: `{gamesBefore}`\n" \
     + f"gamesAfter: `{gamesAfter}`\n" \
     + f"stoppedPlaying: `{stoppedPlaying}`\n" \
