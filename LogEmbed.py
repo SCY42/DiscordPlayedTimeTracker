@@ -6,7 +6,6 @@ from Pippins import GAMER_PIPPINS
 class LogEmbed:
     def __init__(self, game):
         self.game = game
-        self.timestamp = datetime.datetime.now(tz=ZoneInfo("Asia/Seoul"))
 
     def getThumbURL(self):
         try:
@@ -26,10 +25,9 @@ class LogEmbed:
             return None
 
 
-    def stopPlaying(self):
-        elapsed = int((self.timestamp - self.game.created_at).total_seconds())     # type: ignore
-        hr, elapsed = divmod(elapsed, 3600)
-        min, sec = divmod(elapsed, 60)
+    def stopPlaying(self, seconds):
+        hr, seconds = divmod(seconds, 3600)
+        min, sec = divmod(seconds, 60)
         units = [(hr, "시간"), (min, "분"), (sec, "초")]
         formatted = " ".join([f"{num}{unit}" for num, unit in units if num])
         if not formatted:
@@ -38,16 +36,17 @@ class LogEmbed:
 
         embed = discord.Embed(description=f"{formatted}동안 플레이함",
                               color=discord.Color.brand_red(),
-                              timestamp=self.timestamp)
+                              timestamp=datetime.datetime.now())
         embed.set_author(name=self.game.name,
                          icon_url= self.getThumbURL())    
         embed.set_footer(text="LOG")
         return embed
 
-    def startPlaying(self):
-        embed = discord.Embed(description=f"<t:{int(self.timestamp.timestamp())}:R>에 플레이 시작",
+
+    def startPlaying(self, timestamp: datetime.datetime):
+        embed = discord.Embed(description=f"<t:{int(timestamp.timestamp())}:R>에 플레이 시작",
                               color=discord.Color.brand_green(),
-                              timestamp=self.timestamp)
+                              timestamp=timestamp)
         embed.set_author(name=self.game.name,
                          icon_url=self.getThumbURL())    
         embed.set_footer(text="LOG")

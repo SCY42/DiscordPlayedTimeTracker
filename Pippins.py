@@ -1,11 +1,13 @@
 import discord, os, json, Logger, asyncio, traceback, sys, json
 from dotenv import load_dotenv
+from datetime import datetime
 
 
 class Pippins(discord.Client):
     def __init__(self):
         super().__init__(intents = discord.Intents.all())
         self.BLACKLIST: dict[str, list[dict[str, str]]] = {}
+        self.NOW_PLAYING: dict[str, list[tuple[str, datetime]]] = {}
         with open("userID_channel.json", 'r', encoding="utf8") as f:
             self.USERID_CHANNEL: dict[str, dict[str, int]] = json.load(f)
 
