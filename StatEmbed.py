@@ -1,5 +1,6 @@
 import discord, datetime, re
 from zoneinfo import ZoneInfo
+from Pippins import GAMER_PIPPINS
 
 
 ICON_MONDAY = "https://cdn.discordapp.com/emojis/1409429972556316672.png"
@@ -48,6 +49,7 @@ class StatEmbed:
         if self.existingEmbedDict is None:
             return False
         
+        GAMER_PIPPINS.logger.debug(f"기존 통계 임베드 날짜: `{self.existingEmbedDict["author"]["name"]}`\n게임 시작 날짜: `{self.startTime.year}년 {self.startTime.month}월 {self.startTime.day}일`")
         return self.existingEmbedDict["author"]["name"] == f"{self.startTime.year}년 {self.startTime.month}월 {self.startTime.day}일"
 
 
@@ -62,7 +64,10 @@ class StatEmbed:
         if m: minutes = int(m.group(1))
         if s: seconds = int(s.group(1))
 
-        return hours * 3600 + minutes * 60 + seconds
+        result = hours * 3600 + minutes * 60 + seconds
+        GAMER_PIPPINS.logger.debug(f"문자열 `{string}`가 정수 `{result}`로 변환됨.")
+
+        return result
 
 
     @staticmethod
@@ -74,7 +79,11 @@ class StatEmbed:
             return "0초"
 
         parts = [(h, "시간"), (m, "분"), (s, "초")]
-        return" ".join([f"{part[0]}{part[1]}" for part in parts if part[0]])
+        result = " ".join([f"{part[0]}{part[1]}" for part in parts if part[0]])
+
+        GAMER_PIPPINS.logger.debug(f"정수 `{seconds}`가 문자열 `{result}로 변환됨.`")
+
+        return result
 
 
     def setFields(self, isToday) -> None:

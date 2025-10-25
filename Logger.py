@@ -44,8 +44,7 @@ async def errorConsumer(queue: asyncio.Queue):
         embed.add_field(name="Cause", value=cause, inline=False)
         embed.add_field(name="Traceback", value=f"```{tb}```", inline=False)
 
-        await channel.send("<@513676568745213953>")
-        await channel.send(embed=embed)
+        await channel.send(content="<@513676568745213953>", embed=embed)
   
 
 class MultiHandler(logging.Handler):

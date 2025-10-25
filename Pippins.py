@@ -16,8 +16,6 @@ class Pippins(discord.Client):
 
         self.GAMING_LOG_GUILD: discord.Guild = self.get_guild(1408875641071472783)                          # type: ignore
         self.USER_42: discord.Member = self.GAMING_LOG_GUILD.get_member(513676568745213953)                 # type: ignore
-        self.STAT_CHANNEL: discord.TextChannel = self.GAMING_LOG_GUILD.get_channel(1408876560077033552)     # type: ignore
-        self.LOG_CHANNEL: discord.TextChannel = self.GAMING_LOG_GUILD.get_channel(1408876545749160056)      # type: ignore
         self.SYSTEM_CHANNEL: discord.TextChannel = self.GAMING_LOG_GUILD.get_channel(1427623274589847592)   # type: ignore
 
         self.myLogger = Logger.MyLogger(self.SYSTEM_CHANNEL)
@@ -31,13 +29,20 @@ class Pippins(discord.Client):
             asyncio.create_task(Logger.errorConsumer(errorQueue)),
         ]
 
-        print("게이머 피핀스 온라인!")
+        icon = "https://cdn.discordapp.com/emojis/1431071558348312676.png"
+        embed = discord.Embed(title="INFO", description="게이머 피핀스 온라인!", color=0x6CD0D0)
+        embed.set_author(name="LOG", icon_url=icon)
+        embed.set_image(url="https://cdn.discordapp.com/emojis/1431622836828639257.gif")
+        await self.SYSTEM_CHANNEL.send(embed=embed)
 
 
     async def on_message(self, msg: discord.Message):
         if msg.content == "싱크":
             await msg.channel.send("싱크!")
-            await TREE.sync()
+            try:
+                await TREE.sync()
+                self.logger.info("트리에 싱크함.")
+            except: self.logger.warning("트리에 싱크할 수 없었음.")
 
 
     async def on_error(self, event, *args, **kwargs):
@@ -61,7 +66,7 @@ class Pippins(discord.Client):
     def runBot(self):
         print("봇 토큰 전달 중...")
         load_dotenv("../.env")
-        super().run(os.environ.get("GAMER_PIPPINS_TOKEN")) # type: ignore
+        super().run(os.environ.get("TESTER_PIPPINS_TOKEN")) # type: ignore
 
 
     def getChannelFromID(self, id: int, type: str):

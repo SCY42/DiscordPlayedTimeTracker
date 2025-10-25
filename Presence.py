@@ -5,7 +5,7 @@ from Pippins import GAMER_PIPPINS
 
 
 @GAMER_PIPPINS.event
-async def on_presence_update(before, after):
+async def on_presence_update(before: discord.Member, after: discord.Member):
     if before.guild != GAMER_PIPPINS.GAMING_LOG_GUILD:
         return
     
@@ -21,6 +21,13 @@ async def on_presence_update(before, after):
 
     stoppedPlaying = [game for game in gamesBefore if game.name not in [_game.name for _game in gamesAfter]]
     startedPlaying = [game for game in gamesAfter if game.name not in [_game.name for _game in gamesBefore]]
+
+    logText = "===== before.display_name의 활동 상태 업데이트됨 =====\n\n" \
+    + f"gamesBefore: `{gamesBefore}`\n" \
+    + f"gamesAfter: `{gamesAfter}`\n" \
+    + f"stoppedPlaying: `{stoppedPlaying}`\n" \
+    + f"startedPlaying: `{startedPlaying}`"
+    GAMER_PIPPINS.logger.info(logText)
 
     if not (stoppedPlaying or startedPlaying):
         return
