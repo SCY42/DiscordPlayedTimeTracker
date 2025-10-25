@@ -14,7 +14,7 @@ ICON_SUNDAY = "https://cdn.discordapp.com/emojis/1409430046766137454.png"
 WEEKDAY_ICONS = (ICON_MONDAY, ICON_TUESDAY, ICON_WEDNESDAY, ICON_THURSDAY, ICON_FRIDAY, ICON_SATURDAY, ICON_SUNDAY)
 
 class StatEmbed:
-    def __init__(self, existingEmbed, updatedGame) -> None:
+    def __init__(self, existingEmbed, updatedGame, timestamp) -> None:
         if existingEmbed is not None:
             self.existingEmbedDict: dict = existingEmbed.to_dict()
         else:
@@ -23,7 +23,7 @@ class StatEmbed:
 
         self.updatedGame = updatedGame
         self.now = datetime.datetime.now(tz=ZoneInfo("Asia/Seoul"))
-        self.startTime = updatedGame.created_at.astimezone(tz=ZoneInfo("Asia/Seoul"))
+        self.startTime = timestamp
         self.playtimeSeconds = int((self.now - self.startTime).total_seconds())
 
         self.createNewEmbedDict()
@@ -66,7 +66,6 @@ class StatEmbed:
 
         result = hours * 3600 + minutes * 60 + seconds
         GAMER_PIPPINS.logger.debug(f"문자열 `{string}`가 정수 `{result}`로 변환됨.")
-
         return result
 
 
@@ -80,9 +79,7 @@ class StatEmbed:
 
         parts = [(h, "시간"), (m, "분"), (s, "초")]
         result = " ".join([f"{part[0]}{part[1]}" for part in parts if part[0]])
-
-        GAMER_PIPPINS.logger.debug(f"정수 `{seconds}`가 문자열 `{result}로 변환됨.`")
-
+        GAMER_PIPPINS.logger.debug(f"정수 `{seconds}`가 문자열 `{result}`로 변환됨.")
         return result
 
 

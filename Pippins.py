@@ -1,11 +1,14 @@
 import discord, os, json, Logger, asyncio, traceback, sys, json
 from dotenv import load_dotenv
+from datetime import datetime
 
 
 class Pippins(discord.Client):
     def __init__(self):
         super().__init__(intents = discord.Intents.all())
         self.BLACKLIST: dict[str, list[dict[str, str]]] = {}
+        self.NOW_PLAYING: dict[str, list[tuple[str, datetime]]] = {}
+        self.PENDING_ENDS: dict[str, list[tuple[str, asyncio.Task]]] = {}
         with open("userID_channel.json", 'r', encoding="utf8") as f:
             self.USERID_CHANNEL: dict[str, dict[str, int]] = json.load(f)
 
@@ -15,9 +18,7 @@ class Pippins(discord.Client):
         await self.wait_until_ready()
 
         self.GAMING_LOG_GUILD: discord.Guild = self.get_guild(1408875641071472783)                          # type: ignore
-        self.USER_42: discord.Member = self.GAMING_LOG_GUILD.get_member(513676568745213953)                 # type: ignore
         self.SYSTEM_CHANNEL: discord.TextChannel = self.GAMING_LOG_GUILD.get_channel(1427623274589847592)   # type: ignore
-
         self.myLogger = Logger.MyLogger(self.SYSTEM_CHANNEL)
         self.logger = self.myLogger.getLogger()
         debugQueue, infoQueue, warningQueue, errorQueue = self.myLogger.getHandler().getQueues()

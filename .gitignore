@@ -171,3 +171,5 @@ cython_debug/
 .pypirc
 
 blacklist.json
+now_playing.json
+test.py
