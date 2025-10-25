@@ -65,8 +65,6 @@ class StatEmbed:
         if s: seconds = int(s.group(1))
 
         result = hours * 3600 + minutes * 60 + seconds
-        GAMER_PIPPINS.logger.debug(f"문자열 `{string}`가 정수 `{result}`로 변환됨.")
-
         return result
 
 
@@ -80,8 +78,6 @@ class StatEmbed:
 
         parts = [(h, "시간"), (m, "분"), (s, "초")]
         result = " ".join([f"{part[0]}{part[1]}" for part in parts if part[0]])
-
-        GAMER_PIPPINS.logger.debug(f"정수 `{seconds}`가 문자열 `{result}로 변환됨.`")
 
         return result
 

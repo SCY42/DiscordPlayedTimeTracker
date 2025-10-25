@@ -172,3 +172,4 @@ cython_debug/
 
 blacklist.json
 now_playing.json
+test.py
