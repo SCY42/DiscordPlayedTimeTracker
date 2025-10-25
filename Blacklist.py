@@ -1,4 +1,4 @@
-import discord, json, datetime
+import discord, json, datetime, re
 from zoneinfo import ZoneInfo
 from Pippins import GAMER_PIPPINS, TREE
 from EditStatEmbed import deleteEntry
@@ -12,10 +12,19 @@ def load_blacklist():
 load_blacklist()
 
 
+p = re.compile(r"(\d{4})년 (\d{1,2})월 (\d{1,2})일")
+
+def date_to_int(date: str) -> int:
+    y, m, d = p.findall(date)[0]
+    return int(y) * 10 ** 4 + int(m) * 10 ** 2 + int(d)
+
+
 def save_blacklist():
     with open("blacklist.json", 'w', encoding="utf8") as f:
         for blacklist in GAMER_PIPPINS.BLACKLIST.values():
-            blacklist.sort(key=lambda x: x["date"], reverse=True)
+            print([date_to_int(entry["date"]) for entry in blacklist])
+            blacklist.sort(key=lambda x: date_to_int(x["date"]), reverse=True)
+            print(GAMER_PIPPINS.BLACKLIST)
         json.dump(GAMER_PIPPINS.BLACKLIST, f, indent=4)
 
 
