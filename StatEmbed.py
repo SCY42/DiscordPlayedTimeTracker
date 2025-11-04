@@ -35,8 +35,8 @@ class StatEmbed:
     def createNewEmbedDict(self) -> None:
         self.newEmbedDict = dict()
         self.newEmbedDict["footer"] = { "text": "마지막 업데이트" }
-        self.newEmbedDict["author"] = { "name": f"{self.now.year}년 {self.now.month}월 {self.now.day}일",
-                                        "icon_url": WEEKDAY_ICONS[self.now.weekday()] }
+        self.newEmbedDict["author"] = { "name": f"{self.startTime.year}년 {self.startTime.month}월 {self.startTime.day}일",
+                                        "icon_url": WEEKDAY_ICONS[self.startTime.weekday()] }
         self.newEmbedDict["fields"] = []
         self.newEmbedDict["flags"] = 0
         self.newEmbedDict["color"] = None
