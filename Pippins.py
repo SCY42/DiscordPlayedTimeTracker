@@ -55,7 +55,8 @@ class Pippins(discord.Client):
             msg = traceback.format_exc()
             frames = traceback.extract_tb(tb)
             frame = frames[-1]
-            cause = f"Function `{frame.name}` in File `{frame.filename.split("\\")[-1]}`"
+            nameOfFile = frame.filename.split("\\")[-1]
+            cause = f"Function `{frame.name}` in File `{nameOfFile}`"
             data = {"e": eType, "tb": msg, "cause": cause}
         else:
             data = {"e": "Not an Error", "tb": "Empty TraceBack", "cause": "None"}

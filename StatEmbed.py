@@ -49,7 +49,7 @@ class StatEmbed:
         if self.existingEmbedDict is None:
             return False
         
-        GAMER_PIPPINS.logger.debug(f"기존 통계 임베드 날짜: `{self.existingEmbedDict["author"]["name"]}`\n게임 시작 날짜: `{self.startTime.year}년 {self.startTime.month}월 {self.startTime.day}일`")
+        GAMER_PIPPINS.logger.debug(f"기존 통계 임베드 날짜: `{self.existingEmbedDict['author']['name']}`\n게임 시작 날짜: `{self.startTime.year}년 {self.startTime.month}월 {self.startTime.day}일`")
         return self.existingEmbedDict["author"]["name"] == f"{self.startTime.year}년 {self.startTime.month}월 {self.startTime.day}일"
 
 
