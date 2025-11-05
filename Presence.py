@@ -37,7 +37,7 @@ async def on_presence_update(before: discord.Member, after: discord.Member):
     
     if stoppedPlaying:
         for game in stoppedPlaying:
-            timestamp, seconds = delFromNP(before, str(game.name))
+            timestamp, seconds = delFromNP(before, game)
 
             await logChannel.send(embed=LogEmbed(game).stopPlaying(seconds))   # type: ignore
 
@@ -75,25 +75,33 @@ def addToNP(user: discord.Member, game: str):
             nowPlaying.append((game, timestamp))    # 플레이 중에 추가
 
 
-def delFromNP(user: discord.Member, game: str) -> tuple[datetime.datetime, int] | tuple[None, int]:
+def delFromNP(user: discord.Member, game) -> tuple[datetime.datetime, int] | tuple[None, int]:
     now = datetime.datetime.now(tz=ZoneInfo("Asia/Seoul"))
     userID = str(user.id)
     nowPlaying = GAMER_PIPPINS.NOW_PLAYING.get(userID)  # 유저가 플레이 중인 게임들의 리스트
 
     if nowPlaying is None or nowPlaying == []:  # 유저가 아무 게임도 플레이 중이 아님 (뭔가 잘못됨)
-        GAMER_PIPPINS.logger.warning(f"`{game}` 세션이 종료되었지만, 플레이 시작 기록이 없음.")
-        return None, 0
+        GAMER_PIPPINS.logger.warning(f"`{game.name}` 세션이 종료되었지만, 플레이 시작 기록이 없음.")
+        if game.start is None:
+            seconds = 0
+        else:
+            seconds = int((now - game.start).total_seconds())
+        return None, seconds
 
     else:
         for session in nowPlaying:
-            if session[0] == game:
+            if session[0] == game.name:
                 seconds = int((now - session[1]).total_seconds())
                 timestamp = session[1]
                 nowPlaying.remove(session)  # 플레이 중에서 삭제
                 return timestamp, seconds
         else:   
-            GAMER_PIPPINS.logger.warning(f"`{game}` 세션이 종료되었지만, 플레이 시작 기록이 없음.")
-            return None, 0
+            GAMER_PIPPINS.logger.warning(f"`{game.name}` 세션이 종료되었지만, 플레이 시작 기록이 없음.")
+            if game.start is None:
+                seconds = 0
+            else:
+                seconds = int((now - game.start).total_seconds())
+            return None, seconds
 
             
 

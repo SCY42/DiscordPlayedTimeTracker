@@ -36,6 +36,8 @@ class Pippins(discord.Client):
         embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1419672385937739817/1434065315716796457/PippinsCheer.gif?ex=690b9626&is=690a44a6&hm=37317b52f88b6af9ac1e4787a0c094108e1bad35a963177beef78211790b955e&")
         await self.SYSTEM_CHANNEL.send(embed=embed)
 
+        print("게이머 피핀스 온라인!")
+
 
     async def on_message(self, msg: discord.Message):
         if msg.content == "싱크":
