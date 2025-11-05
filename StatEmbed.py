@@ -24,7 +24,12 @@ class StatEmbed:
         self.updatedGame = updatedGame
         self.now = datetime.datetime.now(tz=ZoneInfo("Asia/Seoul"))
         self.startTime = timestamp
-        self.playtimeSeconds = int((self.now - self.startTime).total_seconds())
+        if self.startTime is None and updatedGame.start is None:    # 둘 다 정보 없음
+            self.playtimeSeconds = 0
+        elif updatedGame.start is not None:                         # nowplaying에 저장된 정보만 없음
+            self.playtimeSeconds = int((self.now - updatedGame.start).total_seconds())
+        else:                                                       # 둘 다 정보 있음 (nowplaying 우선)
+            self.playtimeSeconds = int((self.now - self.startTime).total_seconds())
 
         self.createNewEmbedDict()
         self.setFields(self._isTodaysStat())  # type: ignore
