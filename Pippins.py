@@ -8,7 +8,9 @@ class Pippins(discord.Client):
         super().__init__(intents = discord.Intents.all())
         self.BLACKLIST: dict[str, list[dict[str, str]]] = {}
         self.NOW_PLAYING: dict[str, list[tuple[str, datetime]]] = {}
-        self.PENDING_ENDS: dict[str, list[tuple[str, asyncio.Task]]] = {}
+        self.CUSTOM_GAME_ICONS: dict[str, str] = {
+            "CLIP STUDIO PAINT": "https://cdn.discordapp.com/emojis/1444620730225524807.png",
+        }
         with open("userID_channel.json", 'r', encoding="utf8") as f:
             self.USERID_CHANNEL: dict[str, dict[str, int]] = json.load(f)
 
@@ -70,7 +72,7 @@ class Pippins(discord.Client):
     def runBot(self):
         print("봇 토큰 전달 중...")
         load_dotenv("../.env")
-        super().run(os.environ.get("GAMER_PIPPINS_TOKEN")) # type: ignore
+        super().run(os.environ.get("TESTER_PIPPINS_TOKEN")) # type: ignore
 
 
     def getChannelFromID(self, id: int, type: str):

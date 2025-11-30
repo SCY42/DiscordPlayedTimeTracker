@@ -34,7 +34,7 @@ class StatEmbed:
         self.playtimeSeconds = int((self.now - self.startTime).total_seconds())
 
         self.createNewEmbedDict()
-        self.setFields(self._isTodaysStat())  # type: ignore
+        self.setFields(self._isTodaysStat())    # type: ignore
         self.setColor()
         self.setTitle()
 
