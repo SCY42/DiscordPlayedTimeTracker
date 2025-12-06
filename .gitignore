@@ -170,6 +170,4 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
-blacklist.json
-now_playing.json
 test.py
