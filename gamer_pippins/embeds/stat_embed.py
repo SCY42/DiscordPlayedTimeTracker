@@ -1,6 +1,6 @@
 import discord, datetime, re
 from zoneinfo import ZoneInfo
-from Pippins import GAMER_PIPPINS
+from gamer_pippins.bot.bot import GAMER_PIPPINS
 
 
 ICON_MONDAY = "https://cdn.discordapp.com/emojis/1409429972556316672.png"

@@ -1,4 +1,4 @@
-import discord, os, json, Logger, asyncio, traceback, sys, json
+import discord, os, json, gamer_pippins.logging.logger as Logger, asyncio, traceback, sys, json
 from dotenv import load_dotenv
 from datetime import datetime
 

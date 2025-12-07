@@ -1,7 +1,7 @@
 import discord, datetime
-from LogEmbed import LogEmbed
-from StatEmbed import StatEmbed
-from Pippins import GAMER_PIPPINS
+from embeds.log_embed import LogEmbed
+from embeds.stat_embed import StatEmbed
+from gamer_pippins.bot.bot import GAMER_PIPPINS
 from zoneinfo import ZoneInfo
 
 

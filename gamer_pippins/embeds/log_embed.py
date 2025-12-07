@@ -1,6 +1,6 @@
 import discord, datetime, requests
 from zoneinfo import ZoneInfo
-from Pippins import GAMER_PIPPINS
+from gamer_pippins.bot.bot import GAMER_PIPPINS
 
 
 class LogEmbed:

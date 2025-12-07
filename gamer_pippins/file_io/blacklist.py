@@ -1,7 +1,7 @@
 import discord, json, datetime, re
 from zoneinfo import ZoneInfo
-from Pippins import GAMER_PIPPINS, TREE
-from EditStatEmbed import deleteEntry
+from gamer_pippins.bot.bot import GAMER_PIPPINS, TREE
+from gamer_pippins.embeds.stat_embed_editor import deleteEntry
 
 
 def load_blacklist():
