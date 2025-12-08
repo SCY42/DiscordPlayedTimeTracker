@@ -1,6 +1,6 @@
 import discord
 from gamer_pippins.bot.bot import GAMER_PIPPINS
-from gamer_pippins.embeds.stat_embed import StatEmbed
+from gamer_pippins.embed.stat_embed import StatEmbed
 
 
 async def deleteEntry(user: discord.Member | discord.User, games: list[str]) -> bool:
