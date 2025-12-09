@@ -13,6 +13,8 @@ class Pippins(discord.Client):
         load_dotenv("../.env")
         super().run(os.environ.get("GAMER_PIPPINS_TOKEN")) # type: ignore
 
+# TODO Cog 장착하기
+
 
 GAMER_PIPPINS = Pippins()
 TREE = discord.app_commands.CommandTree(GAMER_PIPPINS)

@@ -1,3 +1,6 @@
+from logging.logger import MyLogger
+
+
 def secondsToString(seconds) -> str:
     h, seconds = divmod(seconds, 3600)
     m, s = divmod(seconds, 60)
@@ -7,5 +10,5 @@ def secondsToString(seconds) -> str:
 
     parts = [(h, "시간"), (m, "분"), (s, "초")]
     result = " ".join([f"{part[0]}{part[1]}" for part in parts if part[0]])
-    GAMER_PIPPINS.logger.debug(f"정수 `{seconds}`가 문자열 `{result}`로 변환됨.")
+    MyLogger.logger.debug(f"정수 `{seconds}`가 문자열 `{result}`로 변환됨.")
     return result

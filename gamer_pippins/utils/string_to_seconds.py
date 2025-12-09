@@ -1,3 +1,7 @@
+import re
+from logging.logger import MyLogger
+
+
 def stringToSeconds(string) -> int:
     hours, minutes, seconds = 0, 0, 0
     h = re.search(r'(\d+)시간', string)
@@ -9,5 +13,5 @@ def stringToSeconds(string) -> int:
     if s: seconds = int(s.group(1))
 
     result = hours * 3600 + minutes * 60 + seconds
-    GAMER_PIPPINS.logger.debug(f"문자열 `{string}`가 정수 `{result}`로 변환됨.")
+    MyLogger.logger.debug(f"문자열 `{string}`가 정수 `{result}`로 변환됨.")
     return result

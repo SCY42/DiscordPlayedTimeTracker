@@ -1,6 +1,9 @@
-def statDeleteConfirmView(games: list[str]):
-    view = discord.ui.View()
-    view.add_item(StatDeleteYesButton(games, view))
-    view.add_item(StatDeleteNoButton(games, view))
+import discord
+from view.button.stat_delete_choice_button import StatDeleteYesButton, StatDeleteNoButton
 
-    return view
+
+class StatDeleteConfirmView(discord.ui.View):
+    def __init__(self, games: list[str]):
+        super().__init__(timeout=None)
+        self.add_item(StatDeleteYesButton(games, self))
+        self.add_item(StatDeleteNoButton(games, self))

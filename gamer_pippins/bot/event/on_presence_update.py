@@ -1,56 +1,69 @@
 import datetime
 from zoneinfo import ZoneInfo
+from discord.ext.commands import Cog
+from typing import TYPE_CHECKING
+from view.embed.stat_embed import StatEmbed
+from view.embed.log_start_embed import LogStartEmbed
+from view.embed.log_stop_embed import LogStopEmbed
+from trackers.manage_now_playing import delFromNP, addToNP
+if TYPE_CHECKING:
+    import discord
 
 
-@bot.event
-async def on_presence_update(before: discord.Member, after: discord.Member):
-    if before.guild != GAMER_PIPPINS.GAMING_LOG_GUILD:
-        return
-    
-    timestamp = datetime.datetime.now(tz=ZoneInfo("Asia/Seoul"))
-    
-    logChannel = GAMER_PIPPINS.getChannelFromID(before.id, "log")
-    if not logChannel: return
+class PresenceListener(Cog):
+    def __init__(self, bot):
+        self.bot = bot
+        
 
-    statChannel = GAMER_PIPPINS.getChannelFromID(before.id, "stat")
+    @Cog.listener()
+    async def on_presence_update(self, before: discord.Member, after: discord.Member):
+        if before.guild != self.bot.GAMING_LOG_GUILD:
+            return
+        
+        timestamp = datetime.datetime.now(tz=ZoneInfo("Asia/Seoul"))
+        
+        logChannel = self.bot.getChannelFromID(before.id, "log")
+        if not logChannel: return
 
-    gamesBefore = [game for game in before.activities if game.type == discord.ActivityType.playing \
-                   and game.name not in [_game["name"] for _game in GAMER_PIPPINS.BLACKLIST[str(before.id)]]]
-    gamesAfter = [game for game in after.activities if game.type == discord.ActivityType.playing \
-                  and game.name not in [_game["name"] for _game in GAMER_PIPPINS.BLACKLIST[str(before.id)]]]
+        statChannel = self.bot.getChannelFromID(before.id, "stat")
 
-    stoppedPlaying = [game for game in gamesBefore if game.name not in [_game.name for _game in gamesAfter]]
-    startedPlaying = [game for game in gamesAfter if game.name not in [_game.name for _game in gamesBefore]]
+        gamesBefore = [game for game in before.activities if game.type == discord.ActivityType.playing \
+                    and game.name not in [_game["name"] for _game in self.bot.BLACKLIST[str(before.id)]]]
+        gamesAfter = [game for game in after.activities if game.type == discord.ActivityType.playing \
+                    and game.name not in [_game["name"] for _game in self.bot.BLACKLIST[str(before.id)]]]
 
-    if not (stoppedPlaying or startedPlaying):
-        return
+        stoppedPlaying = [game for game in gamesBefore if game.name not in [_game.name for _game in gamesAfter]]
+        startedPlaying = [game for game in gamesAfter if game.name not in [_game.name for _game in gamesBefore]]
 
-    logText = f"===== `{before.display_name}`의 활동 상태 업데이트됨 =====\n\n" \
-    + f"gamesBefore: `{gamesBefore}`\n" \
-    + f"gamesAfter: `{gamesAfter}`\n" \
-    + f"stoppedPlaying: `{stoppedPlaying}`\n" \
-    + f"startedPlaying: `{startedPlaying}`"
-    GAMER_PIPPINS.logger.info(logText)
-    
-    if stoppedPlaying:
-        for game in stoppedPlaying:
-            timestamp, seconds = delFromNP(before, game)
+        if not (stoppedPlaying or startedPlaying):
+            return
 
-            await logChannel.send(embed=LogEmbed(game).stopPlaying(seconds))   # type: ignore
+        logText = f"===== `{before.display_name}`의 활동 상태 업데이트됨 =====\n\n" \
+        + f"gamesBefore: `{gamesBefore}`\n" \
+        + f"gamesAfter: `{gamesAfter}`\n" \
+        + f"stoppedPlaying: `{stoppedPlaying}`\n" \
+        + f"startedPlaying: `{startedPlaying}`"
+        self.bot.logger.info(logText)
+        
+        if stoppedPlaying:
+            for game in stoppedPlaying:
+                timestamp, seconds = delFromNP(before, game)
 
-            msgExists = False
-            async for msg in statChannel.history(limit=1):  # type: ignore
-                msgExists = True
-                embed, isNewMsg = StatEmbed(msg.embeds[0], game, timestamp).getEmbed()
-                if isNewMsg:
+                await logChannel.send(LogStopEmbed(game.name, seconds))   # type: ignore
+
+                msgExists = False
+                async for msg in statChannel.history(limit=1):  # type: ignore
+                    msgExists = True
+                    embed, isNewMsg = StatEmbed(msg.embeds[0], game, timestamp).getEmbed()
+                    if isNewMsg:
+                        await statChannel.send(embed=embed) # type: ignore
+                    else:
+                        await msg.edit(embed=embed)
+                if not msgExists:
+                    embed, _ = StatEmbed(None, game, timestamp).getEmbed()
                     await statChannel.send(embed=embed) # type: ignore
-                else:
-                    await msg.edit(embed=embed)
-            if not msgExists:
-                embed, _ = StatEmbed(None, game, timestamp).getEmbed()
-                await statChannel.send(embed=embed) # type: ignore
 
-    if startedPlaying:
-        for game in startedPlaying:
-            addToNP(before, str(game.name))
-            await logChannel.send(embed=LogEmbed(game).startPlaying(timestamp))  # type: ignore
+        if startedPlaying:
+            for game in startedPlaying:
+                addToNP(before, str(game.name))
+                await logChannel.send(embed=LogStartEmbed(game.name, timestamp))  # type: ignore

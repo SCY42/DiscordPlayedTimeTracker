@@ -1,17 +1,16 @@
 import discord, datetime
-from embed.log_embed import LogEmbed
-from embed.stat_embed import StatEmbed
-from gamer_pippins.bot.bot import GAMER_PIPPINS
 from zoneinfo import ZoneInfo
+from file_io.json_data import JsonData
+from logging.logger import MyLogger
 
 
 def addToNP(user: discord.Member, game: str):
     timestamp = datetime.datetime.now(tz=ZoneInfo("Asia/Seoul"))
     userID = str(user.id)
-    nowPlaying = GAMER_PIPPINS.NOW_PLAYING.get(userID)  # 유저가 플레이 중인 게임들의 리스트
+    nowPlaying = JsonData.NOW_PLAYING.get(userID)  # 유저가 플레이 중인 게임들의 리스트
 
     if nowPlaying is None or nowPlaying == []:  # 유저가 아무 게임도 플레이 중이 아님
-        GAMER_PIPPINS.NOW_PLAYING[userID] = [(game, timestamp)]
+        JsonData.NOW_PLAYING[userID] = [(game, timestamp)]
     
     else:
         for session in nowPlaying:
@@ -24,10 +23,10 @@ def addToNP(user: discord.Member, game: str):
 def delFromNP(user: discord.Member, game) -> tuple[datetime.datetime, int] | tuple[None, int]:
     now = datetime.datetime.now(tz=ZoneInfo("Asia/Seoul"))
     userID = str(user.id)
-    nowPlaying = GAMER_PIPPINS.NOW_PLAYING.get(userID)  # 유저가 플레이 중인 게임들의 리스트
+    nowPlaying = JsonData.NOW_PLAYING.get(userID)  # 유저가 플레이 중인 게임들의 리스트
 
     if nowPlaying is None or nowPlaying == []:  # 유저가 아무 게임도 플레이 중이 아님 (뭔가 잘못됨)
-        GAMER_PIPPINS.logger.warning(f"`{game.name}` 세션이 종료되었지만, 플레이 시작 기록이 없음.")
+        MyLogger.logger.warning(f"`{game.name}` 세션이 종료되었지만, 플레이 시작 기록이 없음.")
         if game.start is None:
             seconds = 0
         else:
@@ -42,7 +41,7 @@ def delFromNP(user: discord.Member, game) -> tuple[datetime.datetime, int] | tup
                 nowPlaying.remove(session)  # 플레이 중에서 삭제
                 return timestamp, seconds
         else:   
-            GAMER_PIPPINS.logger.warning(f"`{game.name}` 세션이 종료되었지만, 플레이 시작 기록이 없음.")
+            MyLogger.logger.warning(f"`{game.name}` 세션이 종료되었지만, 플레이 시작 기록이 없음.")
             if game.start is None:
                 seconds = 0
             else:

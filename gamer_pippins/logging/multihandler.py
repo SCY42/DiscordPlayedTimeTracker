@@ -1,11 +1,12 @@
 import logging, discord
+from queues import MyQueues
 
 
 class MultiHandler(logging.Handler):
     def __init__(self, channel: discord.TextChannel):
         super().__init__()
         self.channel = channel
-        self.queues = myQueues()
+        self.queues = MyQueues()
         self.debugQueue, self.infoQueue, self.warningQueue, self.errorQueue = self.queues.getQueues()
 
 
