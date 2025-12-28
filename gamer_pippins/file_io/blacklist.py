@@ -1,8 +1,8 @@
 import json, datetime
 from zoneinfo import ZoneInfo
-from utils.date_to_int import date_to_int
+from utils import dateToInt
 from file_io.json_data import JsonData
-from logging.logger import MyLogger
+from log import MyLogger
 
 
 def load_blacklist():
@@ -24,8 +24,8 @@ def save_blacklist():
     try:
         with open("blacklist.json", 'w', encoding="utf8") as f:
             for blacklist in JsonData.BLACKLIST.values():
-                print([date_to_int(entry["date"]) for entry in blacklist])
-                blacklist.sort(key=lambda x: date_to_int(x["date"]), reverse=True)
+                print([dateToInt(entry["date"]) for entry in blacklist])
+                blacklist.sort(key=lambda x: dateToInt(x["date"]), reverse=True)
                 print(JsonData.BLACKLIST)
             json.dump(JsonData.BLACKLIST, f, indent=4)
     finally:
@@ -60,6 +60,5 @@ def remove_blacklist(userID: str, gamesToRemove: list[str]):
                 MyLogger.logger.info(f"유저 아이디 `{userID}`의 기존 블랙리스트에서 `{gameName}` 검색됨. 항목 삭제됨.")
         else:
             MyLogger.logger.info(f"유저 아이디 `{userID}`의 기존 블랙리스트에서 `{gameName}` 검색되지 않음. 삭제된 항목 없음.")
-
 
     save_blacklist()

@@ -1,6 +1,6 @@
 import discord, datetime
 from zoneinfo import ZoneInfo
-from logging.logger import MyLogger
+from log.logger import MyLogger
 from utils.get_game_icon_url import getGameIconUrl
 
 

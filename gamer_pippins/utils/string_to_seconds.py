@@ -1,5 +1,5 @@
 import re
-from logging.logger import MyLogger
+from log import MyLogger
 
 
 def stringToSeconds(string) -> int:

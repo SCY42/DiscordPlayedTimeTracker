@@ -1,4 +1,4 @@
-from logging.logger import MyLogger
+from log.logger import MyLogger
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     import discord

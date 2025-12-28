@@ -2,8 +2,7 @@ import sys, traceback, json
 from discord.ext.commands import Cog
 
 
-
-class ErrorLister(Cog):
+class ErrorListener(Cog):
     def __init__(self, bot):
         self.bot = bot
 

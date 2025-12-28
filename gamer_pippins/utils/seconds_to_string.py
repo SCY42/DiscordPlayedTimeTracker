@@ -1,4 +1,4 @@
-from logging.logger import MyLogger
+from log import MyLogger
 
 
 def secondsToString(seconds) -> str:

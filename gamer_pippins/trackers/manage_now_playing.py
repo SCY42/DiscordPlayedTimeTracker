@@ -1,10 +1,10 @@
 import discord, datetime
 from zoneinfo import ZoneInfo
 from file_io.json_data import JsonData
-from logging.logger import MyLogger
+from log.logger import MyLogger
 
 
-def addToNP(user: discord.Member, game: str):
+def addToNowPlaying(user: discord.Member, game: str):
     timestamp = datetime.datetime.now(tz=ZoneInfo("Asia/Seoul"))
     userID = str(user.id)
     nowPlaying = JsonData.NOW_PLAYING.get(userID)  # 유저가 플레이 중인 게임들의 리스트
@@ -20,7 +20,7 @@ def addToNP(user: discord.Member, game: str):
             nowPlaying.append((game, timestamp))    # 플레이 중에 추가
 
 
-def delFromNP(user: discord.Member, game) -> tuple[datetime.datetime, int] | tuple[None, int]:
+def delFromNowPlaying(user: discord.Member, game) -> tuple[datetime.datetime, int] | tuple[None, int]:
     now = datetime.datetime.now(tz=ZoneInfo("Asia/Seoul"))
     userID = str(user.id)
     nowPlaying = JsonData.NOW_PLAYING.get(userID)  # 유저가 플레이 중인 게임들의 리스트

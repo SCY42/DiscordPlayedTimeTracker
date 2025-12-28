@@ -1,6 +1,6 @@
 import requests
 from file_io.json_data import JsonData
-from logging.logger import MyLogger
+from log.logger import MyLogger
 
 
 def getGameIconUrl(gameName: str) -> str | None:

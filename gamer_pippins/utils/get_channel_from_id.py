@@ -1,4 +1,4 @@
-def getChannelFromID(self, id: int, type: str):
+def getChannelFromID(id: int, type: str):
     user = self.USERID_CHANNEL.get(str(id))
     if not user:
         return False
