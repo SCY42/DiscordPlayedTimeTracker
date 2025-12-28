@@ -1,10 +1,9 @@
 import discord, datetime
 from zoneinfo import ZoneInfo
-from log.logger import MyLogger
-from utils.get_game_icon_url import getGameIconUrl
+from gamer_pippins.logger import MyLogger
+from gamer_pippins.utils import getGameIconUrl
 
 
-# TODO 뜯어온 메서드 알맞게 수정
 class LogStopEmbed:
     def __init__(self, gameName, seconds):
         hr, seconds = divmod(seconds, 3600)

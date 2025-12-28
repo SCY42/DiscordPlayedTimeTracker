@@ -1,5 +1,5 @@
 import discord
-from view.button.stat_delete_choice_button import StatDeleteYesButton, StatDeleteNoButton
+from ..button.stat_delete_choice_button import StatDeleteYesButton, StatDeleteNoButton
 
 
 class StatDeleteConfirmView(discord.ui.View):

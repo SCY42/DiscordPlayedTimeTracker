@@ -1,6 +1,6 @@
 import requests
-from file_io.json_data import JsonData
-from log.logger import MyLogger
+from gamer_pippins.file_io.json_data import JsonData
+from gamer_pippins.logger import MyLogger
 
 
 def getGameIconUrl(gameName: str) -> str | None:

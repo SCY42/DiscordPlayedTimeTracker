@@ -1,5 +1,5 @@
 import re
-from log.logger import MyLogger
+from gamer_pippins.logger import MyLogger
 
 
 p = re.compile(r"(\d{4})년 (\d{1,2})월 (\d{1,2})일")

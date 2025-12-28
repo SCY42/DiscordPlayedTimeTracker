@@ -1,3 +1,7 @@
+import discord
+from .recent_stats_selection import RecentStatsSelection
+
+
 class RecentStatsSelectionView(discord.ui.View):
     async def init(self, userID: str):
         super().__init__()

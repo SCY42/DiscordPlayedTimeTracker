@@ -1,4 +1,4 @@
-from log import MyLogger
+from gamer_pippins.logger import MyLogger
 
 
 def secondsToString(seconds) -> str:

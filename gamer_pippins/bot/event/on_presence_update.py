@@ -1,20 +1,19 @@
 import datetime
 from zoneinfo import ZoneInfo
+import discord
 from discord.ext.commands import Cog
 from typing import TYPE_CHECKING
-from view.embed.stat_embed import StatEmbed
-from view.embed.log_start_embed import LogStartEmbed
-from view.embed.log_stop_embed import LogStopEmbed
-from trackers.manage_now_playing import delFromNowPlaying, addToNowPlaying
-from utils.get_channel_from_id import getChannelFromID
-from config.config_manager import ConfigManager
+from gamer_pippins.view.embed import LogStartEmbed, LogStopEmbed, StatEmbed
+from gamer_pippins.trackers.manage_now_playing import delFromNowPlaying, addToNowPlaying
+from gamer_pippins.utils import getChannelFromID
+from gamer_pippins.config import ConfigManager
+from gamer_pippins.logger import MyLogger
 if TYPE_CHECKING:
-    import discord
     from bot import Pippins
 
 
 class PresenceListener(Cog):
-    def __init__(self, bot: Pippins):
+    def __init__(self, bot: "Pippins"):
         self.bot = bot
         
 
@@ -46,7 +45,7 @@ class PresenceListener(Cog):
         + f"gamesAfter: `{gamesAfter}`\n" \
         + f"stoppedPlaying: `{stoppedPlaying}`\n" \
         + f"startedPlaying: `{startedPlaying}`"
-        self.bot.logger.info(logText)
+        MyLogger.logger.info(logText)
         
         if stoppedPlaying:
             for game in stoppedPlaying:

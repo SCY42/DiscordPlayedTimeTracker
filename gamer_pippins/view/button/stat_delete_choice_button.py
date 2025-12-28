@@ -1,4 +1,6 @@
 import discord
+from gamer_pippins.view.embed import deleteEntry
+from gamer_pippins.utils import disableEveryItem
 
 
 class StatDeleteYesButton(discord.ui.Button):

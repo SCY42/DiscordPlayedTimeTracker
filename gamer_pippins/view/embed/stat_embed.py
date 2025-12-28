@@ -1,6 +1,8 @@
-import discord, datetime, re
+import discord, datetime
 from zoneinfo import ZoneInfo
-from gamer_pippins.bot.bot import GAMER_PIPPINS
+from gamer_pippins.logger import MyLogger
+from gamer_pippins.utils import secondsToString, stringToSeconds
+from gamer_pippins.config import ConfigManager
 
 
 class StatEmbed:
@@ -33,7 +35,7 @@ class StatEmbed:
         self.newEmbedDict = dict()
         self.newEmbedDict["footer"] = { "text": "마지막 업데이트" }
         self.newEmbedDict["author"] = { "name": f"{self.startTime.year}년 {self.startTime.month}월 {self.startTime.day}일",
-                                        "icon_url": WEEKDAY_ICONS[self.startTime.weekday()] }
+                                        "icon_url": ConfigManager.weekdayIcons[self.startTime.weekday()] }
         self.newEmbedDict["fields"] = []
         self.newEmbedDict["flags"] = 0
         self.newEmbedDict["color"] = None
@@ -46,7 +48,7 @@ class StatEmbed:
         if self.existingEmbedDict is None:
             return False
         
-        GAMER_PIPPINS.logger.debug(f"기존 통계 임베드 날짜: `{self.existingEmbedDict['author']['name']}`\n게임 시작 날짜: `{self.startTime.year}년 {self.startTime.month}월 {self.startTime.day}일`")
+        MyLogger.logger.debug(f"기존 통계 임베드 날짜: `{self.existingEmbedDict['author']['name']}`\n게임 시작 날짜: `{self.startTime.year}년 {self.startTime.month}월 {self.startTime.day}일`")
         return self.existingEmbedDict["author"]["name"] == f"{self.startTime.year}년 {self.startTime.month}월 {self.startTime.day}일"
 
 
@@ -55,7 +57,7 @@ class StatEmbed:
             self.newEmbedDict["fields"].append({
                 "inline": False,
                 "name": self.updatedGame.name,
-                "value": self._SecondsToString(self.playtimeSeconds)
+                "value": secondsToString(self.playtimeSeconds)
             })
             self.isNew = True
         
@@ -65,21 +67,21 @@ class StatEmbed:
                 fields = [{
                     "inline": False,
                     "name": self.updatedGame.name,
-                    "value": self._SecondsToString(self.playtimeSeconds)
+                    "value": secondsToString(self.playtimeSeconds)
                 }]
             else:
                 for field in fields:
                     if field["name"] == self.updatedGame.name:
-                        field["value"] = self._SecondsToString(self._stringToSeconds(field["value"]) + self.playtimeSeconds)
+                        field["value"] = secondsToString(stringToSeconds(field["value"]) + self.playtimeSeconds)
                         break
                 else:
                     fields.append({
                         "inline": False,
                         "name": self.updatedGame.name,
-                        "value": self._SecondsToString(self.playtimeSeconds)
+                        "value": secondsToString(self.playtimeSeconds)
                     })
                 
-            fields.sort(key=lambda x: self._stringToSeconds(x["value"]), reverse=True)
+            fields.sort(key=lambda x: stringToSeconds(x["value"]), reverse=True)
             self.newEmbedDict["fields"] = fields
 
 
@@ -103,7 +105,7 @@ class StatEmbed:
 
     def setTitle(self) -> None:
         sec = self.getTotalSeconds()
-        self.newEmbedDict["title"] = f"플레이 시간 통계 | {self._SecondsToString(sec)}"
+        self.newEmbedDict["title"] = f"플레이 시간 통계 | {secondsToString(sec)}"
 
 
     def getEmbed(self) -> tuple[discord.Embed, bool]:

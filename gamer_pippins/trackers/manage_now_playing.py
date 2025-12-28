@@ -1,7 +1,7 @@
 import discord, datetime
 from zoneinfo import ZoneInfo
-from file_io.json_data import JsonData
-from log.logger import MyLogger
+from gamer_pippins.file_io.json_data import JsonData
+from gamer_pippins.logger import MyLogger
 
 
 def addToNowPlaying(user: discord.Member, game: str):

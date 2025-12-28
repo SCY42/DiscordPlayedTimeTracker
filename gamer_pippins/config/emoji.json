@@ -3,12 +3,5 @@
     "icon_debug": "https://cdn.discordapp.com/emojis/1431071556590633010.png",
     "icon_info": "https://cdn.discordapp.com/emojis/1431071558348312676.png",
     "icon_warning": "https://cdn.discordapp.com/emojis/1431071554833350778.png",
-    "icon_error": "https://cdn.discordapp.com/emojis/1431071559942148126.png",
-    "mon": "https://cdn.discordapp.com/emojis/1409429972556316672.png",
-    "tue": "https://cdn.discordapp.com/emojis/1409430005691322418.png",
-    "wed": "https://cdn.discordapp.com/emojis/1409430012087631892.png",
-    "thu": "https://cdn.discordapp.com/emojis/1409430023550668844.png",
-    "fri": "https://cdn.discordapp.com/emojis/1409430031440150588.png",
-    "sat": "https://cdn.discordapp.com/emojis/1409430039287824394.png",
-    "sun": "https://cdn.discordapp.com/emojis/1409430046766137454.png"
+    "icon_error": "https://cdn.discordapp.com/emojis/1431071559942148126.png"
 }

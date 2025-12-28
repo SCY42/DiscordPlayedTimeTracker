@@ -1,7 +1,10 @@
+from gamer_pippins.config.config_manager import ConfigManager
+
+
 def getChannelFromID(id: int, type: str):
-    user = self.USERID_CHANNEL.get(str(id))
+    user = ConfigManager.userid2Channel.get(str(id))
     if not user:
         return False
     
     channelID = user[type]
-    return self.get_channel(channelID)
+    return ConfigManager.gamingGuild.get_channel(channelID)

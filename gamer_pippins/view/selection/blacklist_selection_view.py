@@ -1,3 +1,7 @@
+import discord
+from .blacklist_selection import BlacklistSelection
+
+
 class BlacklistSelectionView(discord.ui.View):
     async def init(self, userID: str):
         super().__init__()

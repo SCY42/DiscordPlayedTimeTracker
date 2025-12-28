@@ -1,28 +1,27 @@
 import json, datetime
 from zoneinfo import ZoneInfo
-from utils import dateToInt
-from file_io.json_data import JsonData
-from log import MyLogger
+from gamer_pippins.utils import dateToInt
+from gamer_pippins.file_io.json_data import JsonData
+from gamer_pippins.logger import MyLogger
 
 
 def load_blacklist():
     success = False
     try:
-        with open("blacklist.json", 'r', encoding="utf8") as f:
+        with open("gamer_pippins/config/blacklist.json", 'r', encoding="utf8") as f:
             JsonData.BLACKLIST = json.load(f)
         success = True
     finally:
         if success: MyLogger.logger.info("블랙리스트 성공적으로 로드됨.")
 
 
-# TODO 모듈 불러올 때 블랙리스트를 로드하는 다른 방법 고안하기
 load_blacklist()
 
 
 def save_blacklist():
     success = False
     try:
-        with open("blacklist.json", 'w', encoding="utf8") as f:
+        with open("gamer_pippins./config/blacklist.json", 'w', encoding="utf8") as f:
             for blacklist in JsonData.BLACKLIST.values():
                 print([dateToInt(entry["date"]) for entry in blacklist])
                 blacklist.sort(key=lambda x: dateToInt(x["date"]), reverse=True)

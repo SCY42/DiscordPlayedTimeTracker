@@ -1,9 +1,7 @@
 import discord
 from discord.ext.commands import Cog
-from file_io.blacklist import load_blacklist, append_blacklist
-from view.selection.recent_stats_selection_view import RecentStatsSelectionView
-from view.selection.blacklist_selection_view import BlacklistSelectionView
-from view.selection.stat_delete_confirm_view import StatDeleteConfirmView
+from gamer_pippins.file_io.blacklist import load_blacklist, append_blacklist
+from gamer_pippins.view.selection import RecentStatsSelectionView, BlacklistSelectionView, StatDeleteConfirmView
 
 
 class BlacklistManagementCog(Cog):

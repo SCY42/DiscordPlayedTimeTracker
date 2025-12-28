@@ -1,14 +1,20 @@
+import discord
+from gamer_pippins.logger import MyLogger
+from gamer_pippins.file_io.blacklist import append_blacklist
+from gamer_pippins.utils import getChannelFromID
+
+
 class RecentStatsSelection(discord.ui.Select):
     async def getLatestStatGames(self):
         games = []
 
-        async for msg in GAMER_PIPPINS.getChannelFromID(self.userID, "stat").history(limit=1):   # type: ignore
+        async for msg in getChannelFromID(self.userID, "stat").history(limit=1):   # type: ignore
             embedDict = msg.embeds[0].to_dict()
             if embedDict.get("fields") is None:
-                GAMER_PIPPINS.logger.info(f"유저 아이디 `{self.userID}`의 최신 통계에 항목 없음.")
+                MyLogger.logger.info(f"유저 아이디 `{self.userID}`의 최신 통계에 항목 없음.")
                 return False
             games = [field["name"] for field in embedDict.get("fields")]    # type: ignore
-            GAMER_PIPPINS.logger.debug(f"유저 아이디 `{self.userID}`의 최신 통계에서 `{games}` 취득함.")
+            MyLogger.logger.debug(f"유저 아이디 `{self.userID}`의 최신 통계에서 `{games}` 취득함.")
 
         return [discord.SelectOption(label="선택 취소하기!", emoji="🚫", value="SELECTION_CANCELLED")] \
              + [discord.SelectOption(label=name) if name else discord.SelectOption(label="???") for name in games]
@@ -21,16 +27,16 @@ class RecentStatsSelection(discord.ui.Select):
         if options is False:
             super().__init__(placeholder="제일 최근의 통계에 기록된 게임 목록",
                              options=[discord.SelectOption(label="앗?! 제일 최근의 통계가 비어 있어!", emoji="🚫", value="SELECTION_CANCELLED")])
-            GAMER_PIPPINS.logger.info("빈 선택 UI 생성됨.")
+            MyLogger.logger.info("빈 선택 UI 생성됨.")
         else:
             super().__init__(placeholder="제일 최근의 통계에 기록된 게임 목록", options=options)   # type: ignore
-            GAMER_PIPPINS.logger.info("정상적인 선택 UI 생성됨.")
+            MyLogger.logger.info("정상적인 선택 UI 생성됨.")
 
     
     async def callback(self, interaction: discord.Interaction):
         self.disabled = True
         await interaction.message.edit(view=self.parentView) # type: ignore
-        GAMER_PIPPINS.logger.info(f"메시지 뷰 비활성화됨. ({interaction.message.jump_url})") # type: ignore
+        MyLogger.logger.info(f"메시지 뷰 비활성화됨. ({interaction.message.jump_url})") # type: ignore
 
         if self.values[0] == "SELECTION_CANCELLED":
             await interaction.response.send_message("블랙리스트 추가를 취소했어!") # type: ignore

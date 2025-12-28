@@ -1,5 +1,5 @@
 import logging, discord
-from queues import MyQueues
+from .queues import MyQueues
 
 
 class MultiHandler(logging.Handler):

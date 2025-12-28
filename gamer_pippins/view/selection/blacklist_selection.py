@@ -1,8 +1,14 @@
+import discord
+from gamer_pippins.config import ConfigManager
+from gamer_pippins.logger import MyLogger
+from gamer_pippins.file_io.blacklist import load_blacklist, remove_blacklist
+
+
 class BlacklistSelection(discord.ui.Select):
     async def getCancelPlusBlacklistOptions(self):
         self.blacklist = [discord.SelectOption(label="선택 취소하기!", emoji="🚫", value="SELECTION_CANCELLED")] \
                        + [discord.SelectOption(label=name) if name else discord.SelectOption(label="???") \
-                          for name in [entry["name"] for entry in GAMER_PIPPINS.BLACKLIST[self.userID]]]
+                          for name in [entry["name"] for entry in ConfigManager.blacklist[self.userID]]]
 
     async def init(self, view: discord.ui.View, userID: str):
         self.parentView = view
@@ -14,7 +20,7 @@ class BlacklistSelection(discord.ui.Select):
     async def callback(self, interaction: discord.Interaction):
         self.disabled = True
         await interaction.message.edit(view=self.parentView) # type: ignore
-        GAMER_PIPPINS.logger.info(f"메시지 뷰 비활성화됨. ({interaction.message.jump_url})") # type: ignore
+        MyLogger.logger.info(f"메시지 뷰 비활성화됨. ({interaction.message.jump_url})") # type: ignore
 
         if self.values[0] == "SELECTION_CANCELLED":
             await interaction.response.send_message("블랙리스트 삭제를 취소했어!") # type: ignore

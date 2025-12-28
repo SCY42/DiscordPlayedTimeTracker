@@ -1,5 +1,6 @@
 import sys, traceback, json
 from discord.ext.commands import Cog
+from gamer_pippins.logger import MyLogger
 
 
 class ErrorListener(Cog):
@@ -24,4 +25,4 @@ class ErrorListener(Cog):
             data = {"e": "Not an Error", "tb": "Empty TraceBack", "cause": "None"}
             
         serialized = json.dumps(data)
-        self.bot.logger.error(serialized)
+        MyLogger.logger.error(serialized)
