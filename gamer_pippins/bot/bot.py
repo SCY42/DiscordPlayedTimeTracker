@@ -52,7 +52,7 @@ class Pippins(discomm.Bot):
     def runBot(self):
         print("봇 토큰 전달 중...")
         load_dotenv("../.env")
-        super().run(os.environ.get("TESTER_PIPPINS_TOKEN")) # type: ignore
+        super().run(os.environ.get("GAMER_PIPPINS_TOKEN")) # type: ignore
 
 
 GAMER_PIPPINS = Pippins()
