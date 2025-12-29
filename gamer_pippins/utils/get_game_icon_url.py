@@ -6,7 +6,7 @@ if TYPE_CHECKING:
     import discord
 
 
-def getGameIconUrl(game: discord.Activity) -> str | None:
+def getGameIconUrl(game: "discord.Activity") -> str | None:
     gameName = game.name
 
     if gameName in ConfigManager.customIcon.keys():
