@@ -1,14 +1,19 @@
 import requests
 from gamer_pippins.config import ConfigManager
 from gamer_pippins.logger import MyLogger
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    import discord
 
 
-def getGameIconUrl(gameName: str) -> str | None:
+def getGameIconUrl(game: discord.Activity) -> str | None:
+    gameName = game.name
+
     if gameName in ConfigManager.customIcon.keys():
         return ConfigManager.customIcon[gameName]
 
     try:
-        APP_ID = self.game.application_id   # type: ignore
+        APP_ID = game.application_id   # type: ignore
         MyLogger.logger.info(f"`{gameName}`의 앱 ID 취득 성공.")
     except:
         MyLogger.logger.warning(f"`{gameName}`의 앱 ID 취득 실패.")
