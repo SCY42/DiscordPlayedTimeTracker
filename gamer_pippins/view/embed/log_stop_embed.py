@@ -12,7 +12,7 @@ class LogStopEmbed:
         formatted = " ".join([f"{num}{unit}" for num, unit in units if num])
         if not formatted:
             formatted = "??? "
-            MyLogger.logger.warning(f"`{game}`의 플레이 시간이 0초로 기록됨.")
+            MyLogger.logger.warning(f"`{game.name}`의 플레이 시간이 0초로 기록됨.")
 
         embed = discord.Embed(description=f"{formatted}동안 플레이함",
                                 color=discord.Color.brand_red(),
