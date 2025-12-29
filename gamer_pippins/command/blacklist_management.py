@@ -1,5 +1,6 @@
 import discord
 from discord.ext.commands import Cog
+from gamer_pippins.config import ConfigManager
 from gamer_pippins.file_io.blacklist import load_blacklist, append_blacklist
 from gamer_pippins.view.selection import RecentStatsSelectionView, BlacklistSelectionView, StatDeleteConfirmView
 
@@ -15,8 +16,8 @@ class BlacklistManagementCog(Cog):
         embed = discord.Embed(title="<:cross:1421630412022743040>블랙리스트")
         userID = str(i.user.id)
 
-        if self.bot.BLACKLIST[userID]:
-            for game in self.bot.BLACKLIST[userID]:
+        if ConfigManager.blacklist[userID]:
+            for game in ConfigManager.blacklist[userID]:
                 embed.add_field(name=game["name"],
                                 value=game["date"] + "에 등록됨",
                                 inline=False)
@@ -46,7 +47,7 @@ class BlacklistManagementCog(Cog):
     async def removeBlacklist(self, i: discord.Interaction):
         view = BlacklistSelectionView()
         await view.init(str(i.user.id))
-        options = [entry["name"] for entry in self.bot.BLACKLIST[str(i.user.id)]]
+        options = [entry["name"] for entry in ConfigManager.blacklist[str(i.user.id)]]
 
         if not options:
             await i.response.send_message("블랙리스트가 비어 있어!")

@@ -1,11 +1,11 @@
 import requests
-from gamer_pippins.file_io.json_data import JsonData
+from gamer_pippins.config import ConfigManager
 from gamer_pippins.logger import MyLogger
 
 
 def getGameIconUrl(gameName: str) -> str | None:
-    if gameName in JsonData.CUSTOM_ICON.keys():
-        return JsonData.CUSTOM_ICON[gameName]
+    if gameName in ConfigManager.customIcon.keys():
+        return ConfigManager.customIcon[gameName]
 
     try:
         APP_ID = self.game.application_id   # type: ignore

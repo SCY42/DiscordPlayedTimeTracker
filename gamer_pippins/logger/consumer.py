@@ -1,6 +1,4 @@
-import asyncio
-import discord
-import json
+import discord, asyncio, json
 
 
 async def debugConsumer(queue: asyncio.Queue):

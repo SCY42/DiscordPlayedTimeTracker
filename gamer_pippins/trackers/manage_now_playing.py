@@ -1,16 +1,16 @@
 import discord, datetime
 from zoneinfo import ZoneInfo
-from gamer_pippins.file_io.json_data import JsonData
+from gamer_pippins.config import ConfigManager
 from gamer_pippins.logger import MyLogger
 
 
 def addToNowPlaying(user: discord.Member, game: str):
     timestamp = datetime.datetime.now(tz=ZoneInfo("Asia/Seoul"))
     userID = str(user.id)
-    nowPlaying = JsonData.NOW_PLAYING.get(userID)  # 유저가 플레이 중인 게임들의 리스트
+    nowPlaying = ConfigManager.nowPlaying.get(userID)  # 유저가 플레이 중인 게임들의 리스트
 
     if nowPlaying is None or nowPlaying == []:  # 유저가 아무 게임도 플레이 중이 아님
-        JsonData.NOW_PLAYING[userID] = [(game, timestamp)]
+        ConfigManager.nowPlaying[userID] = [(game, timestamp)]
     
     else:
         for session in nowPlaying:
@@ -23,7 +23,7 @@ def addToNowPlaying(user: discord.Member, game: str):
 def delFromNowPlaying(user: discord.Member, game) -> tuple[datetime.datetime, int] | tuple[None, int]:
     now = datetime.datetime.now(tz=ZoneInfo("Asia/Seoul"))
     userID = str(user.id)
-    nowPlaying = JsonData.NOW_PLAYING.get(userID)  # 유저가 플레이 중인 게임들의 리스트
+    nowPlaying = ConfigManager.nowPlaying.get(userID)  # 유저가 플레이 중인 게임들의 리스트
 
     if nowPlaying is None or nowPlaying == []:  # 유저가 아무 게임도 플레이 중이 아님 (뭔가 잘못됨)
         MyLogger.logger.warning(f"`{game.name}` 세션이 종료되었지만, 플레이 시작 기록이 없음.")

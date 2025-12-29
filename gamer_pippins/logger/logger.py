@@ -1,6 +1,5 @@
 import logging
 from .multihandler import MultiHandler
-from .consumer import *
 from gamer_pippins.config import ConfigManager
 
 

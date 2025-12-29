@@ -13,9 +13,26 @@ class Pippins(discomm.Bot):
         print("내부 캐시 준비 중...")
         await self.wait_until_ready()
 
+        print("길드 로드 중...")
         self.loadGuilds()
+        
+        print("로거 로드 중...")
         import gamer_pippins.bot.event.on_ready as onReady
         await onReady.loadLogger()
+
+        print("코그 장착 중...")
+        from gamer_pippins.bot.event import MessageListener, PresenceListener
+        from gamer_pippins.command import BlacklistManagementCog
+
+        await GAMER_PIPPINS.add_cog(MessageListener(GAMER_PIPPINS), override=True)
+        await GAMER_PIPPINS.add_cog(PresenceListener(GAMER_PIPPINS), override=True)
+        await GAMER_PIPPINS.add_cog(BlacklistManagementCog(GAMER_PIPPINS), override=True)
+
+        from gamer_pippins.bot.event.on_error import onError
+        @self.event
+        async def on_error(event, *args, **kwargs):
+            await onError()
+        
         await onReady.sendOnlineLog()
 
         print("게이머 피핀스 온라인!")

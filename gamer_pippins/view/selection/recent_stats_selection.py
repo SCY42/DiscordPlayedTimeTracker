@@ -1,6 +1,6 @@
 import discord
 from gamer_pippins.logger import MyLogger
-from gamer_pippins.file_io.blacklist import append_blacklist
+from gamer_pippins.file_io import append_blacklist
 from gamer_pippins.utils import getChannelFromID
 
 

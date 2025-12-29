@@ -20,4 +20,8 @@ class LogStopEmbed:
         embed.set_author(name=gameName,
                             icon_url= getGameIconUrl(gameName))    
         embed.set_footer(text="LOG")
-        return embed
+        self.embed = embed
+
+
+    def getEmbed(self):
+        return self.embed

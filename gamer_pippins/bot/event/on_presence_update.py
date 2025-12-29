@@ -1,13 +1,12 @@
-import datetime
-from zoneinfo import ZoneInfo
-import discord
+import discord, datetime
 from discord.ext.commands import Cog
-from typing import TYPE_CHECKING
+from zoneinfo import ZoneInfo
 from gamer_pippins.view.embed import LogStartEmbed, LogStopEmbed, StatEmbed
 from gamer_pippins.trackers.manage_now_playing import delFromNowPlaying, addToNowPlaying
 from gamer_pippins.utils import getChannelFromID
 from gamer_pippins.config import ConfigManager
 from gamer_pippins.logger import MyLogger
+from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from bot import Pippins
 
@@ -17,9 +16,9 @@ class PresenceListener(Cog):
         self.bot = bot
         
 
-    @Cog.listener()
+    @Cog.listener(name="on_presence_update")
     async def on_presence_update(self, before: discord.Member, after: discord.Member):
-        if before.guild != ConfigManager:
+        if before.guild != ConfigManager.gamingGuild:
             return
         
         timestamp = datetime.datetime.now(tz=ZoneInfo("Asia/Seoul"))
@@ -51,7 +50,7 @@ class PresenceListener(Cog):
             for game in stoppedPlaying:
                 timestamp, seconds = delFromNowPlaying(before, game)
 
-                await logChannel.send(LogStopEmbed(game.name, seconds))   # type: ignore
+                await logChannel.send(embed=LogStopEmbed(game.name, seconds).getEmbed())   # type: ignore
 
                 msgExists = False
                 async for msg in statChannel.history(limit=1):  # type: ignore
@@ -68,4 +67,4 @@ class PresenceListener(Cog):
         if startedPlaying:
             for game in startedPlaying:
                 addToNowPlaying(before, str(game.name))
-                await logChannel.send(embed=LogStartEmbed(game.name, timestamp))  # type: ignore
+                await logChannel.send(embed=LogStartEmbed(game.name, timestamp).getEmbed())  # type: ignore

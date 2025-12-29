@@ -8,7 +8,7 @@ async def deleteEntry(user: discord.Member | discord.User, games: list[str]) -> 
     message = None
     embed = None
     result = False
-    statChannel: discord.TextChannel = getChannelFromID(ConfigManager.userid2Channel[str(user.id)]["stat"]) # type: ignore
+    statChannel: discord.TextChannel = getChannelFromID(user.id, "stat")    # type: ignore
 
     async for msg in statChannel.history(limit=1):
         message = msg

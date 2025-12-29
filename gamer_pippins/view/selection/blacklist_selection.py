@@ -1,7 +1,7 @@
 import discord
 from gamer_pippins.config import ConfigManager
 from gamer_pippins.logger import MyLogger
-from gamer_pippins.file_io.blacklist import load_blacklist, remove_blacklist
+from gamer_pippins.file_io import load_blacklist, remove_blacklist
 
 
 class BlacklistSelection(discord.ui.Select):

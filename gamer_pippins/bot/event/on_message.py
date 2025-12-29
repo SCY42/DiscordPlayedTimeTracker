@@ -11,7 +11,7 @@ class MessageListener(Cog):
         self.bot = bot
 
 
-    @Cog.listener()
+    @Cog.listener(name="on_message")
     async def on_message(self, msg: "discord.Message"):
         if msg.content == "싱크":
             await msg.channel.send("싱크!")
@@ -19,3 +19,7 @@ class MessageListener(Cog):
                 await self.bot.tree.sync()
                 MyLogger.logger.info("트리에 싱크함.")
             except: MyLogger.logger.warning("트리에 싱크할 수 없었음.")
+
+    
+        elif msg.content == "에러":
+            await msg.channel.send(f"{1/0}")

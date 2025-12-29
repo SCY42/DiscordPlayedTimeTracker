@@ -1,5 +1,5 @@
 import discord, datetime
-from gamer_pippins.utils.get_game_icon_url import getGameIconUrl
+from gamer_pippins.utils import getGameIconUrl
 
 
 class LogStartEmbed:
@@ -10,4 +10,8 @@ class LogStartEmbed:
         embed.set_author(name=gameName,
                          icon_url=getGameIconUrl(gameName))    
         embed.set_footer(text="LOG")
-        return embed
+        self.embed = embed
+
+    
+    def getEmbed(self):
+        return self.embed
