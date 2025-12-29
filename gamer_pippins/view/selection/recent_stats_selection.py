@@ -2,6 +2,7 @@ import discord
 from gamer_pippins.logger import MyLogger
 from gamer_pippins.file_io import append_blacklist
 from gamer_pippins.utils import getChannelFromID
+from .stat_delete_confirm_view import StatDeleteConfirmView
 
 
 class RecentStatsSelection(discord.ui.Select):
@@ -43,4 +44,4 @@ class RecentStatsSelection(discord.ui.Select):
             return
 
         append_blacklist(self.userID, self.values)
-        await interaction.response.send_message(f"블랙리스트에 {', '.join([f'`{value}`' for value in self.values])}이(가) 추가됐어!\n제일 최근 통계에서 {', '.join([f'`{value}`' for value in self.values])}을(를) 삭제할래?", view=statDeleteConfirmView(self.values)) # type: ignore
+        await interaction.response.send_message(f"블랙리스트에 {', '.join([f'`{value}`' for value in self.values])}이(가) 추가됐어!\n제일 최근 통계에서 {', '.join([f'`{value}`' for value in self.values])}을(를) 삭제할래?", view=StatDeleteConfirmView(self.values)) # type: ignore

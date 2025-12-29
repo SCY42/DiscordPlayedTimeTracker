@@ -50,7 +50,7 @@ class PresenceListener(Cog):
             for game in stoppedPlaying:
                 timestamp, seconds = delFromNowPlaying(before, game)
 
-                await logChannel.send(embed=LogStopEmbed(game.name, seconds).getEmbed())   # type: ignore
+                await logChannel.send(embed=LogStopEmbed(game, seconds).getEmbed())   # type: ignore
 
                 msgExists = False
                 async for msg in statChannel.history(limit=1):  # type: ignore
@@ -67,4 +67,4 @@ class PresenceListener(Cog):
         if startedPlaying:
             for game in startedPlaying:
                 addToNowPlaying(before, str(game.name))
-                await logChannel.send(embed=LogStartEmbed(game.name, timestamp).getEmbed())  # type: ignore
+                await logChannel.send(embed=LogStartEmbed(game, timestamp).getEmbed())  # type: ignore
